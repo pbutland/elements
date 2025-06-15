@@ -1,0 +1,42 @@
+{
+  "inputs": {
+    "src/element-utils.ts": {
+      "bytes": 4580,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/app.ts": {
+      "bytes": 7191,
+      "imports": [
+        {
+          "path": "src/element-utils.ts",
+          "kind": "import-statement",
+          "original": "./element-utils"
+        }
+      ],
+      "format": "esm"
+    }
+  },
+  "outputs": {
+    "dist/app.js.map": {
+      "imports": [],
+      "exports": [],
+      "inputs": {},
+      "bytes": 17095
+    },
+    "dist/app.js": {
+      "imports": [],
+      "exports": [],
+      "entryPoint": "src/app.ts",
+      "inputs": {
+        "src/element-utils.ts": {
+          "bytesInOutput": 2632
+        },
+        "src/app.ts": {
+          "bytesInOutput": 3931
+        }
+      },
+      "bytes": 6634
+    }
+  }
+}
