@@ -3,13 +3,10 @@ import { canBeSpelledWithElements } from './element-utils';
 
 // Function to modify SVG content to make it responsive and theme-aware
 function makeSvgResponsive(svgContent: string): string {
-    // Remove fixed width and height, add viewBox if not present, and set width/height to 100%
     return svgContent
-        .replace(/<svg([^>]*)width="[^"]*"/, '<svg$1')
-        .replace(/<svg([^>]*)height="[^"]*"/, '<svg$1')
         .replace(/<rect([^>]*)fill="white"/, '<rect$1fill="var(--bg-color)"')
         .replace(/<text([^>]*?)>([^<]*)<\/text>/g, '<text$1 fill="var(--text-color)">$2</text>')
-        .replace(/<svg([^>]*)/, '<svg$1 style="width: 100px; height: auto;"')
+        .replace(/<svg([^>]*)/, '<svg$1 class="element-svg-content"')
         .replace(/stroke="black"/g, 'stroke="var(--text-color)"');
 }
 

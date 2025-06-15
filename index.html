@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Element Word Visualizer</title>
     <script src="./dist/app.js" type="module"></script>
     <style>
@@ -38,6 +38,13 @@
             transition: background-color 0.3s, color 0.3s;
         }
         
+        @media (max-width: 768px) {
+            body {
+                max-width: 95%;
+                padding: 15px;
+            }
+        }
+        
         h1 {
             text-align: center;
             color: var(--text-color);
@@ -58,6 +65,13 @@
             color: var(--text-color);
             box-shadow: 0 2px 4px var(--highlight-shadow);
             transition: all 0.3s ease;
+        }
+        
+        @media (max-width: 480px) {
+            input[type="text"] {
+                padding: 10px;
+                font-size: 16px;
+            }
         }
         
         input[type="text"]:focus {
@@ -96,7 +110,6 @@
         
         #result {
             margin: 20px 0;
-            font-size: 18px;
             font-weight: bold;
         }
         
@@ -111,10 +124,27 @@
             justify-content: center;
             align-items: center;
             padding: 10px;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 480px) {
+            .permutation-row {
+                margin-bottom: 10px;
+            }
         }
         
         .element-svg {
             margin: 5px;
+            transition: transform 0.2s;
+        }
+        
+        .element-svg-content {
+            width: 100px;
+            height: auto;
+        }
+        
+        .element-svg:hover {
+            transform: scale(1.05);
         }
         
         .word-spacer {
@@ -123,6 +153,37 @@
             margin: 0 15px;
             align-self: center;
             transition: background-color 0.3s;
+        }
+        
+        /* Responsive styles for different screen sizes */
+        @media (max-width: 768px) {
+            .element-svg-content {
+                width: 80px;
+            }
+            
+            .word-spacer {
+                height: 70px;
+                margin: 0 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .element-svg-content {
+                width: 60px;
+            }
+            
+            .word-spacer {
+                height: 60px;
+                margin: 0 8px;
+            }
+            
+            .permutation-row {
+                padding: 5px;
+            }
+            
+            .element-svg {
+                margin: 3px;
+            }
         }
     </style>
 </head>

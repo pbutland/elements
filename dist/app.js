@@ -175,7 +175,7 @@ function combineWordPermutations(wordPermutations) {
 
 // src/app.ts
 function makeSvgResponsive(svgContent) {
-  return svgContent.replace(/<svg([^>]*)width="[^"]*"/, "<svg$1").replace(/<svg([^>]*)height="[^"]*"/, "<svg$1").replace(/<rect([^>]*)fill="white"/, '<rect$1fill="var(--bg-color)"').replace(/<text([^>]*?)>([^<]*)<\/text>/g, '<text$1 fill="var(--text-color)">$2</text>').replace(/<svg([^>]*)/, '<svg$1 style="width: 100px; height: auto;"').replace(/stroke="black"/g, 'stroke="var(--text-color)"');
+  return svgContent.replace(/<rect([^>]*)fill="white"/, '<rect$1fill="var(--bg-color)"').replace(/<text([^>]*?)>([^<]*)<\/text>/g, '<text$1 fill="var(--text-color)">$2</text>').replace(/<svg([^>]*)/, '<svg$1 class="element-svg-content"').replace(/stroke="black"/g, 'stroke="var(--text-color)"');
 }
 function setTheme(theme) {
   if (theme === "dark") {
