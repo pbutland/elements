@@ -177,11 +177,137 @@ function combineWordPermutations(wordPermutations) {
 function makeSvgResponsive(svgContent) {
   return svgContent.replace(/<rect([^>]*)fill="white"/, '<rect$1fill="var(--bg-color)"').replace(/<text([^>]*?)>([^<]*)<\/text>/g, '<text$1 fill="var(--text-color)">$2</text>').replace(/<svg([^>]*)/, '<svg$1 class="element-svg-content"').replace(/stroke="black"/g, 'stroke="var(--text-color)"');
 }
+function shareUrl(word) {
+  const url = new URL(window.location.href);
+  url.search = new URLSearchParams({ word }).toString();
+  navigator.clipboard.writeText(url.toString()).then(() => {
+    const toast = document.getElementById("toast");
+    if (toast) {
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3e3);
+    }
+  }).catch((err) => {
+    console.error("Failed to copy URL: ", err);
+    alert("Failed to copy the share link to clipboard.");
+  });
+}
 function setTheme(theme) {
   if (theme === "dark") {
     document.body.classList.add("dark-mode");
   } else {
     document.body.classList.remove("dark-mode");
+  }
+}
+function getQueryParam(param) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+}
+function processWordInput(word, elementContainer, resultDiv) {
+  elementContainer.innerHTML = "";
+  resultDiv.textContent = "";
+  const shareButton = document.getElementById("share-button");
+  if (shareButton) {
+    shareButton.disabled = true;
+  }
+  if (!word) {
+    return;
+  }
+  const elementPermutations = canBeSpelledWithElements(word);
+  if (elementPermutations && elementPermutations.length > 0) {
+    resultDiv.textContent = `"${word}" can be spelled in ${elementPermutations.length} different way${elementPermutations.length > 1 ? "s" : ""}`;
+    if (shareButton) {
+      shareButton.disabled = false;
+    }
+    const svgCache = {};
+    elementPermutations.forEach((elementPath, permutationIndex) => {
+      const permutationRow = document.createElement("div");
+      permutationRow.className = "permutation-row";
+      elementContainer.appendChild(permutationRow);
+      const loadPromises = elementPath.map((element) => {
+        if (element === "_SPACE_") {
+          return Promise.resolve({
+            element: "_SPACE_",
+            isSpace: true
+          });
+        }
+        if (svgCache[element]) {
+          return Promise.resolve({
+            element,
+            svgContent: svgCache[element]
+          });
+        }
+        return fetch(`./elements/${element.toLowerCase()}.svg`).then((response) => {
+          if (!response.ok) {
+            throw new Error(`SVG for ${element} not found`);
+          }
+          return response.text();
+        }).then((svgContent) => {
+          svgCache[element] = svgContent;
+          return {
+            element,
+            svgContent
+          };
+        }).catch((error) => {
+          console.error(error);
+          return {
+            element,
+            error: true
+          };
+        });
+      });
+      Promise.all(loadPromises).then((results) => {
+        let currentWord = document.createElement("div");
+        currentWord.className = "element-word";
+        permutationRow.appendChild(currentWord);
+        const spacers = [];
+        let inWord = true;
+        results.forEach((result) => {
+          if ("isSpace" in result && result.isSpace) {
+            const spacerDiv = document.createElement("div");
+            spacerDiv.className = "word-spacer";
+            permutationRow.appendChild(spacerDiv);
+            spacers.push(spacerDiv);
+            currentWord = document.createElement("div");
+            currentWord.className = "element-word";
+            permutationRow.appendChild(currentWord);
+            inWord = true;
+            return;
+          }
+          const elementDiv = document.createElement("div");
+          elementDiv.className = "element-svg";
+          if ("error" in result && result.error) {
+            elementDiv.textContent = `Error loading ${result.element}`;
+          } else if ("svgContent" in result) {
+            elementDiv.innerHTML = makeSvgResponsive(result.svgContent);
+          }
+          currentWord.appendChild(elementDiv);
+        });
+        const updateSpacerVisibility = () => {
+          spacers.forEach((spacer) => {
+            const prevWord = spacer.previousElementSibling;
+            const nextWord = spacer.nextElementSibling;
+            if (prevWord && nextWord) {
+              const prevRect = prevWord.getBoundingClientRect();
+              const nextRect = nextWord.getBoundingClientRect();
+              if (Math.abs(prevRect.top - nextRect.top) > 10) {
+                spacer.classList.add("word-spacer-hidden");
+              } else {
+                spacer.classList.remove("word-spacer-hidden");
+              }
+            }
+          });
+        };
+        setTimeout(updateSpacerVisibility, 10);
+        window.addEventListener("resize", updateSpacerVisibility);
+      });
+    });
+  } else {
+    resultDiv.textContent = `"${word}" cannot be spelled using only chemical elements`;
+    if (shareButton) {
+      shareButton.disabled = true;
+    }
   }
 }
 document.addEventListener("DOMContentLoaded", () => {
@@ -190,112 +316,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultDiv = document.getElementById("result");
   const elementContainer = document.getElementById("element-container");
   const themeRadios = document.querySelectorAll('input[name="theme"]');
+  const shareButton = document.getElementById("share-button");
+  const wordFromParam = getQueryParam("word");
   themeRadios.forEach((radio) => {
     radio.addEventListener("change", (e) => {
       const target = e.target;
       setTheme(target.value);
     });
   });
+  shareButton.addEventListener("click", () => {
+    if (!shareButton.disabled) {
+      const inputText = wordInput.value.trim();
+      if (inputText) {
+        shareUrl(inputText);
+      }
+    }
+  });
   form.addEventListener("submit", (e) => {
     e.preventDefault();
   });
   wordInput.addEventListener("input", () => {
     const inputText = wordInput.value.trim();
-    elementContainer.innerHTML = "";
-    resultDiv.textContent = "";
-    if (!inputText) {
-      resultDiv.textContent = "Please enter a word or phrase";
-      return;
-    }
-    const elementPermutations = canBeSpelledWithElements(inputText);
-    if (elementPermutations && elementPermutations.length > 0) {
-      resultDiv.textContent = `"${inputText}" can be spelled in ${elementPermutations.length} different way${elementPermutations.length > 1 ? "s" : ""}`;
-      const svgCache = {};
-      elementPermutations.forEach((elementPath, permutationIndex) => {
-        const permutationRow = document.createElement("div");
-        permutationRow.className = "permutation-row";
-        elementContainer.appendChild(permutationRow);
-        const loadPromises = elementPath.map((element) => {
-          if (element === "_SPACE_") {
-            return Promise.resolve({
-              element: "_SPACE_",
-              isSpace: true
-            });
-          }
-          if (svgCache[element]) {
-            return Promise.resolve({
-              element,
-              svgContent: svgCache[element]
-            });
-          }
-          return fetch(`./elements/${element.toLowerCase()}.svg`).then((response) => {
-            if (!response.ok) {
-              throw new Error(`SVG for ${element} not found`);
-            }
-            return response.text();
-          }).then((svgContent) => {
-            svgCache[element] = svgContent;
-            return {
-              element,
-              svgContent
-            };
-          }).catch((error) => {
-            console.error(error);
-            return {
-              element,
-              error: true
-            };
-          });
-        });
-        Promise.all(loadPromises).then((results) => {
-          let currentWord = document.createElement("div");
-          currentWord.className = "element-word";
-          permutationRow.appendChild(currentWord);
-          const spacers = [];
-          let inWord = true;
-          results.forEach((result) => {
-            if ("isSpace" in result && result.isSpace) {
-              const spacerDiv = document.createElement("div");
-              spacerDiv.className = "word-spacer";
-              permutationRow.appendChild(spacerDiv);
-              spacers.push(spacerDiv);
-              currentWord = document.createElement("div");
-              currentWord.className = "element-word";
-              permutationRow.appendChild(currentWord);
-              inWord = true;
-              return;
-            }
-            const elementDiv = document.createElement("div");
-            elementDiv.className = "element-svg";
-            if ("error" in result && result.error) {
-              elementDiv.textContent = `Error loading ${result.element}`;
-            } else if ("svgContent" in result) {
-              elementDiv.innerHTML = makeSvgResponsive(result.svgContent);
-            }
-            currentWord.appendChild(elementDiv);
-          });
-          const updateSpacerVisibility = () => {
-            spacers.forEach((spacer) => {
-              const prevWord = spacer.previousElementSibling;
-              const nextWord = spacer.nextElementSibling;
-              if (prevWord && nextWord) {
-                const prevRect = prevWord.getBoundingClientRect();
-                const nextRect = nextWord.getBoundingClientRect();
-                if (Math.abs(prevRect.top - nextRect.top) > 10) {
-                  spacer.classList.add("word-spacer-hidden");
-                } else {
-                  spacer.classList.remove("word-spacer-hidden");
-                }
-              }
-            });
-          };
-          setTimeout(updateSpacerVisibility, 10);
-          window.addEventListener("resize", updateSpacerVisibility);
-        });
-      });
-    } else {
-      resultDiv.textContent = `"${inputText}" cannot be spelled using only chemical elements`;
-    }
+    processWordInput(inputText, elementContainer, resultDiv);
   });
+  if (wordFromParam) {
+    wordInput.value = wordFromParam;
+    processWordInput(wordFromParam, elementContainer, resultDiv);
+  } else {
+    shareButton.disabled = true;
+  }
 });
 //# sourceMappingURL=app.js.map
