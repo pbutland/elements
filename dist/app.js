@@ -248,11 +248,21 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         });
         Promise.all(loadPromises).then((results) => {
+          let currentWord = document.createElement("div");
+          currentWord.className = "element-word";
+          permutationRow.appendChild(currentWord);
+          const spacers = [];
+          let inWord = true;
           results.forEach((result) => {
             if ("isSpace" in result && result.isSpace) {
               const spacerDiv = document.createElement("div");
               spacerDiv.className = "word-spacer";
               permutationRow.appendChild(spacerDiv);
+              spacers.push(spacerDiv);
+              currentWord = document.createElement("div");
+              currentWord.className = "element-word";
+              permutationRow.appendChild(currentWord);
+              inWord = true;
               return;
             }
             const elementDiv = document.createElement("div");
@@ -262,8 +272,25 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if ("svgContent" in result) {
               elementDiv.innerHTML = makeSvgResponsive(result.svgContent);
             }
-            permutationRow.appendChild(elementDiv);
+            currentWord.appendChild(elementDiv);
           });
+          const updateSpacerVisibility = () => {
+            spacers.forEach((spacer) => {
+              const prevWord = spacer.previousElementSibling;
+              const nextWord = spacer.nextElementSibling;
+              if (prevWord && nextWord) {
+                const prevRect = prevWord.getBoundingClientRect();
+                const nextRect = nextWord.getBoundingClientRect();
+                if (Math.abs(prevRect.top - nextRect.top) > 10) {
+                  spacer.classList.add("word-spacer-hidden");
+                } else {
+                  spacer.classList.remove("word-spacer-hidden");
+                }
+              }
+            });
+          };
+          setTimeout(updateSpacerVisibility, 10);
+          window.addEventListener("resize", updateSpacerVisibility);
         });
       });
     } else {

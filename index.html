@@ -123,14 +123,14 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            padding: 10px;
             margin-bottom: 15px;
         }
         
-        @media (max-width: 480px) {
-            .permutation-row {
-                margin-bottom: 10px;
-            }
+        .element-word {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 10px;
+            justify-content: center;
         }
         
         .element-svg {
@@ -149,10 +149,13 @@
         
         .word-spacer {
             width: 2px;
-            height: 80px;
-            margin: 0 15px;
+            margin: 0 10px;
             align-self: center;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+        }
+        
+        .word-spacer-hidden {
+            display: none;
         }
         
         /* Responsive styles for different screen sizes */
@@ -162,8 +165,7 @@
             }
             
             .word-spacer {
-                height: 70px;
-                margin: 0 10px;
+                margin: 5px;
             }
         }
         
@@ -173,8 +175,7 @@
             }
             
             .word-spacer {
-                height: 60px;
-                margin: 0 8px;
+                margin: 0px;
             }
             
             .permutation-row {
@@ -188,7 +189,7 @@
     </style>
 </head>
 <body>
-    <h1>Element Word Visualizer</h1>
+    <h1>Element Visualizer</h1>
     <div class="theme-selector">
         <label>
             <input type="radio" name="theme" value="light" checked> Light Mode
@@ -198,7 +199,7 @@
         </label>
     </div>
     
-    <p>Enter a word to see if it can be spelled using chemical element symbols from the periodic table.</p>
+    <p>Enter a word or phrase to see if it can be spelled using chemical element symbols from the periodic table.</p>
     
     <form id="word-form">
         <input type="text" id="word-input" placeholder="Enter a word (e.g. carbon, science, genius)" autocomplete="off" autofocus required>

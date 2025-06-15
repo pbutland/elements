@@ -123,12 +123,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 // When all SVGs for this permutation are loaded, add them to the container in the correct order
                 Promise.all(loadPromises)
                     .then((results: ElementResult[]) => {
+                        // Group elements into words
+                        let currentWord = document.createElement('div');
+                        currentWord.className = 'element-word';
+                        permutationRow.appendChild(currentWord);
+                        
+                        // Track all word spacers in this permutation
+                        const spacers: HTMLElement[] = [];
+                        
+                        // Track spaces between words
+                        let inWord = true;
+                        
                         results.forEach(result => {
-                            // Handle space marker
+                            // Handle space marker - create a new word container
                             if ('isSpace' in result && result.isSpace) {
                                 const spacerDiv = document.createElement('div');
                                 spacerDiv.className = 'word-spacer';
                                 permutationRow.appendChild(spacerDiv);
+                                spacers.push(spacerDiv);
+                                
+                                // Start a new word container after the spacer
+                                currentWord = document.createElement('div');
+                                currentWord.className = 'element-word';
+                                permutationRow.appendChild(currentWord);
+                                inWord = true; // Mark that we're starting a new word
                                 return;
                             }
                             
@@ -142,8 +160,33 @@ document.addEventListener('DOMContentLoaded', () => {
                                 elementDiv.innerHTML = makeSvgResponsive(result.svgContent);
                             }
                             
-                            permutationRow.appendChild(elementDiv);
+                            // Add the element to the current word container
+                            currentWord.appendChild(elementDiv);
                         });
+                        
+                        // Function to check spacer visibility based on word wrapping
+                        const updateSpacerVisibility = () => {
+                            spacers.forEach(spacer => {
+                                const prevWord = spacer.previousElementSibling as HTMLElement;
+                                const nextWord = spacer.nextElementSibling as HTMLElement;
+                                
+                                if (prevWord && nextWord) {
+                                    const prevRect = prevWord.getBoundingClientRect();
+                                    const nextRect = nextWord.getBoundingClientRect();
+                                    
+                                    // If words are not on the same line, hide the spacer
+                                    if (Math.abs(prevRect.top - nextRect.top) > 10) {
+                                        spacer.classList.add('word-spacer-hidden');
+                                    } else {
+                                        spacer.classList.remove('word-spacer-hidden');
+                                    }
+                                }
+                            });
+                        };
+                        
+                        // Check initially after rendering and on window resize
+                        setTimeout(updateSpacerVisibility, 10);
+                        window.addEventListener('resize', updateSpacerVisibility);
                     });
             });
         } else {
