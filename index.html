@@ -13,8 +13,9 @@
             --border-color: #4285f4;
             --button-bg: #4285f4;
             --button-hover: #3367d6;
-            --highlight-shadow: rgba(0,0,0,0.1);
+            --highlight-shadow: rgba(0,0,0,0.05);
             --highlight-shadow-focus: rgba(0,0,0,0.15);
+            --row-bg: rgba(240,240,240,0.5);
         }
 
         body.dark-mode {
@@ -26,6 +27,7 @@
             --button-hover: #80b1ff;
             --highlight-shadow: rgba(255,255,255,0.05);
             --highlight-shadow-focus: rgba(255,255,255,0.1);
+            --row-bg: rgba(40,40,40,0.5);
         }
         
         body {
@@ -124,12 +126,16 @@
             justify-content: center;
             align-items: center;
             margin-bottom: 15px;
+            padding: 20px 10px;
+            background-color: var(--row-bg);
+            border-radius: 8px;
+            position: relative; /* For positioning the floating download button */
         }
         
         .element-word {
             display: flex;
             flex-wrap: wrap;
-            margin: 0 10px;
+            margin: 0 15px;
             justify-content: center;
         }
         
@@ -145,17 +151,6 @@
         
         .element-svg:hover {
             transform: scale(1.05);
-        }
-        
-        .word-spacer {
-            width: 2px;
-            margin: 0 10px;
-            align-self: center;
-            transition: all 0.3s;
-        }
-        
-        .word-spacer-hidden {
-            display: none;
         }
         
         /* Share Button Styles */
@@ -206,14 +201,54 @@
             opacity: 1;
         }
         
+        /* Download Button Styles */
+        .download-svg-button {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            box-shadow: 0 2px 5px var(--highlight-shadow-focus);
+            opacity: 0.8;
+        }
+        
+        .download-svg-button:hover {
+            background-color: var(--button-hover);
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        
+        .download-svg-button:active {
+            transform: scale(0.95);
+        }
+        
         /* Responsive styles for different screen sizes */
         @media (max-width: 768px) {
             .element-svg-content {
                 width: 80px;
             }
             
-            .word-spacer {
-                margin: 5px;
+            .element-word {
+                margin: 0 10px;
+            }
+            
+            .permutation-row {
+                padding: 20px 10px 40px;
+            }
+            
+            .download-svg-button {
+                width: 36px;
+                height: 36px;
             }
         }
         
@@ -222,16 +257,21 @@
                 width: 60px;
             }
             
-            .word-spacer {
-                margin: 0px;
+            .element-word {
+                margin: 0 6px;
             }
             
             .permutation-row {
-                padding: 5px;
+                padding: 5px 5px 40px; /* Extra padding at bottom for download button */
             }
             
             .element-svg {
                 margin: 3px;
+            }
+            
+            .download-svg-button {
+                width: 32px;
+                height: 32px;
             }
         }
     </style>

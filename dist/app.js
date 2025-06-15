@@ -177,6 +177,99 @@ function combineWordPermutations(wordPermutations) {
 function makeSvgResponsive(svgContent) {
   return svgContent.replace(/<rect([^>]*)fill="white"/, '<rect$1fill="var(--bg-color)"').replace(/<text([^>]*?)>([^<]*)<\/text>/g, '<text$1 fill="var(--text-color)">$2</text>').replace(/<svg([^>]*)/, '<svg$1 class="element-svg-content"').replace(/stroke="black"/g, 'stroke="var(--text-color)"');
 }
+function downloadPermutationAsSVG(permutationRow, word) {
+  const svgElements = permutationRow.querySelectorAll(".element-svg-content");
+  if (!svgElements.length) return;
+  const computedStyle = getComputedStyle(document.body);
+  const bgColor = computedStyle.getPropertyValue("--bg-color").trim();
+  const textColor = computedStyle.getPropertyValue("--text-color").trim();
+  let totalWidth = 0;
+  let maxHeight = 0;
+  svgElements.forEach((svg) => {
+    const svgElement = svg;
+    totalWidth += svgElement.getBoundingClientRect().width;
+    maxHeight = Math.max(maxHeight, svgElement.getBoundingClientRect().height);
+  });
+  totalWidth += (svgElements.length - 1) * 10;
+  totalWidth += 20;
+  maxHeight += 20;
+  const combinedSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  combinedSvg.setAttribute("width", totalWidth.toString());
+  combinedSvg.setAttribute("height", maxHeight.toString());
+  combinedSvg.setAttribute("viewBox", `0 0 ${totalWidth} ${maxHeight}`);
+  combinedSvg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  const bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  bgRect.setAttribute("width", "100%");
+  bgRect.setAttribute("height", "100%");
+  bgRect.setAttribute("fill", computedStyle.backgroundColor);
+  combinedSvg.appendChild(bgRect);
+  const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  let currentX = 10;
+  svgElements.forEach((svg) => {
+    const svgElement = svg;
+    const width = svgElement.getBoundingClientRect().width;
+    const height = svgElement.getBoundingClientRect().height;
+    const svgString = new XMLSerializer().serializeToString(svgElement);
+    const elementSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    elementSvg.setAttribute("width", width.toString());
+    elementSvg.setAttribute("height", height.toString());
+    elementSvg.setAttribute("x", currentX.toString());
+    elementSvg.setAttribute("y", ((maxHeight - height) / 2).toString());
+    const parser = new DOMParser();
+    const svgDoc = parser.parseFromString(svgString, "image/svg+xml");
+    const originalSvg = svgDoc.documentElement;
+    if (originalSvg.hasAttribute("viewBox")) {
+      elementSvg.setAttribute("viewBox", originalSvg.getAttribute("viewBox"));
+    }
+    const replaceVarsInElement = (el) => {
+      if (el.tagName.toLowerCase() === "text" && el.hasAttribute("fill")) {
+        const fillValue = el.getAttribute("fill");
+        if (fillValue?.includes("var(--")) {
+          el.setAttribute("fill", computedStyle.color);
+        }
+      }
+      if (el.tagName.toLowerCase() === "rect" && el.hasAttribute("fill")) {
+        const fillValue = el.getAttribute("fill");
+        if (fillValue?.includes("var(--")) {
+          if (fillValue?.includes("--bg-color")) {
+            el.setAttribute("fill", computedStyle.backgroundColor);
+          }
+        }
+      }
+      if (el.hasAttribute("stroke")) {
+        const strokeValue = el.getAttribute("stroke");
+        if (strokeValue?.includes("var(--")) {
+          el.setAttribute("stroke", computedStyle.color);
+        }
+      }
+      Array.from(el.children).forEach((child) => {
+        replaceVarsInElement(child);
+      });
+    };
+    Array.from(originalSvg.childNodes).forEach((child) => {
+      const importedNode = document.importNode(child, true);
+      if (importedNode.nodeType === Node.ELEMENT_NODE) {
+        replaceVarsInElement(importedNode);
+      }
+      elementSvg.appendChild(importedNode);
+    });
+    group.appendChild(elementSvg);
+    currentX += width + 10;
+  });
+  combinedSvg.appendChild(group);
+  const svgData = new XMLSerializer().serializeToString(combinedSvg);
+  const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+  const svgUrl = URL.createObjectURL(svgBlob);
+  const downloadLink = document.createElement("a");
+  downloadLink.href = svgUrl;
+  downloadLink.download = `${word.replace(/\s+/g, "-")}-elements.svg`;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+  setTimeout(() => {
+    URL.revokeObjectURL(svgUrl);
+  }, 100);
+}
 function shareUrl(word) {
   const url = new URL(window.location.href);
   url.search = new URLSearchParams({ word }).toString();
@@ -261,18 +354,11 @@ function processWordInput(word, elementContainer, resultDiv) {
         let currentWord = document.createElement("div");
         currentWord.className = "element-word";
         permutationRow.appendChild(currentWord);
-        const spacers = [];
-        let inWord = true;
         results.forEach((result) => {
           if ("isSpace" in result && result.isSpace) {
-            const spacerDiv = document.createElement("div");
-            spacerDiv.className = "word-spacer";
-            permutationRow.appendChild(spacerDiv);
-            spacers.push(spacerDiv);
             currentWord = document.createElement("div");
             currentWord.className = "element-word";
             permutationRow.appendChild(currentWord);
-            inWord = true;
             return;
           }
           const elementDiv = document.createElement("div");
@@ -284,23 +370,19 @@ function processWordInput(word, elementContainer, resultDiv) {
           }
           currentWord.appendChild(elementDiv);
         });
-        const updateSpacerVisibility = () => {
-          spacers.forEach((spacer) => {
-            const prevWord = spacer.previousElementSibling;
-            const nextWord = spacer.nextElementSibling;
-            if (prevWord && nextWord) {
-              const prevRect = prevWord.getBoundingClientRect();
-              const nextRect = nextWord.getBoundingClientRect();
-              if (Math.abs(prevRect.top - nextRect.top) > 10) {
-                spacer.classList.add("word-spacer-hidden");
-              } else {
-                spacer.classList.remove("word-spacer-hidden");
-              }
-            }
-          });
-        };
-        setTimeout(updateSpacerVisibility, 10);
-        window.addEventListener("resize", updateSpacerVisibility);
+        const downloadButton = document.createElement("button");
+        downloadButton.className = "download-svg-button";
+        downloadButton.title = "Download SVG";
+        downloadButton.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    `;
+        permutationRow.appendChild(downloadButton);
+        downloadButton.addEventListener("click", () => {
+          downloadPermutationAsSVG(permutationRow, word);
+        });
       });
     });
   } else {

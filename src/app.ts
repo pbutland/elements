@@ -10,6 +10,151 @@ function makeSvgResponsive(svgContent: string): string {
         .replace(/stroke="black"/g, 'stroke="var(--text-color)"');
 }
 
+// Function to create a downloadable SVG from a permutation row
+function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): void {
+    // Get all SVG elements in the permutation row
+    const svgElements = permutationRow.querySelectorAll('.element-svg-content');
+    if (!svgElements.length) return;
+    
+    // Get computed colors from CSS variables for SVG export
+    const computedStyle = getComputedStyle(document.body);
+    const bgColor = computedStyle.getPropertyValue('--bg-color').trim();
+    const textColor = computedStyle.getPropertyValue('--text-color').trim();
+    
+    // Calculate dimensions based on the SVG elements
+    let totalWidth = 0;
+    let maxHeight = 0;
+    
+    // Calculate total width and maximum height
+    svgElements.forEach((svg) => {
+        const svgElement = svg as SVGSVGElement;
+        totalWidth += svgElement.getBoundingClientRect().width;
+        maxHeight = Math.max(maxHeight, svgElement.getBoundingClientRect().height);
+    });
+    
+    // Add some padding
+    totalWidth += (svgElements.length - 1) * 10;  // 10px spacing between elements
+    totalWidth += 20;  // 10px padding on each side
+    maxHeight += 20;   // 10px padding on top and bottom
+    
+    // Start creating the combined SVG
+    const combinedSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    combinedSvg.setAttribute('width', totalWidth.toString());
+    combinedSvg.setAttribute('height', maxHeight.toString());
+    combinedSvg.setAttribute('viewBox', `0 0 ${totalWidth} ${maxHeight}`);
+    combinedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    
+    // Set background color based on current theme (using actual RGB color instead of variable)
+    const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bgRect.setAttribute('width', '100%');
+    bgRect.setAttribute('height', '100%');
+    bgRect.setAttribute('fill', computedStyle.backgroundColor);
+    combinedSvg.appendChild(bgRect);
+    
+    // Group to hold all the elements
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    
+    // Current X position for placing elements
+    let currentX = 10;  // Start with 10px padding
+    
+    // Process each SVG element
+    svgElements.forEach((svg) => {
+        const svgElement = svg as SVGSVGElement;
+        const width = svgElement.getBoundingClientRect().width;
+        const height = svgElement.getBoundingClientRect().height;
+        
+        // Instead of extracting content, generate a new SVG for each element
+        // Get the original SVG's XML content
+        const svgString = new XMLSerializer().serializeToString(svgElement);
+        
+        // Create a new SVG from scratch with proper positioning
+        const elementSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        elementSvg.setAttribute('width', width.toString());
+        elementSvg.setAttribute('height', height.toString());
+        elementSvg.setAttribute('x', currentX.toString());
+        elementSvg.setAttribute('y', ((maxHeight - height) / 2).toString());
+        
+        // Parse the original SVG content as a document
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
+        const originalSvg = svgDoc.documentElement;
+        
+        // Get the viewBox from the original SVG to preserve aspect ratio and positioning
+        if (originalSvg.hasAttribute('viewBox')) {
+            elementSvg.setAttribute('viewBox', originalSvg.getAttribute('viewBox')!);
+        }
+        
+        // Replace CSS variables with computed values in the SVG content
+        const replaceVarsInElement = (el: Element) => {
+            // Handle text elements
+            if (el.tagName.toLowerCase() === 'text' && el.hasAttribute('fill')) {
+                const fillValue = el.getAttribute('fill');
+                if (fillValue?.includes('var(--')) {
+                    el.setAttribute('fill', computedStyle.color);
+                }
+            }
+            
+            // Handle rect elements
+            if (el.tagName.toLowerCase() === 'rect' && el.hasAttribute('fill')) {
+                const fillValue = el.getAttribute('fill');
+                if (fillValue?.includes('var(--')) {
+                    if (fillValue?.includes('--bg-color')) {
+                        el.setAttribute('fill', computedStyle.backgroundColor);
+                    }
+                }
+            }
+            
+            // Handle stroke attributes on any element
+            if (el.hasAttribute('stroke')) {
+                const strokeValue = el.getAttribute('stroke');
+                if (strokeValue?.includes('var(--')) {
+                    el.setAttribute('stroke', computedStyle.color);
+                }
+            }
+            
+            // Process children recursively
+            Array.from(el.children).forEach(child => {
+                replaceVarsInElement(child);
+            });
+        };
+        
+        // Import and copy all child nodes from the original SVG
+        // This preserves their original positions
+        Array.from(originalSvg.childNodes).forEach(child => {
+            const importedNode = document.importNode(child, true);
+            if (importedNode.nodeType === Node.ELEMENT_NODE) {
+                replaceVarsInElement(importedNode as Element);
+            }
+            elementSvg.appendChild(importedNode);
+        });
+        
+        group.appendChild(elementSvg);
+        currentX += width + 10;  // Add spacing
+    });
+    
+    combinedSvg.appendChild(group);
+    
+    // Convert SVG to a data URI
+    const svgData = new XMLSerializer().serializeToString(combinedSvg);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const svgUrl = URL.createObjectURL(svgBlob);
+    
+    // Create a download link
+    const downloadLink = document.createElement('a');
+    downloadLink.href = svgUrl;
+    downloadLink.download = `${word.replace(/\s+/g, '-')}-elements.svg`;
+    
+    // Trigger download
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    
+    // Clean up the URL object
+    setTimeout(() => {
+        URL.revokeObjectURL(svgUrl);
+    }, 100);
+}
+
 // Function to create a shareable URL and copy to clipboard
 function shareUrl(word: string): void {
     // Create URL with the current word as a parameter
@@ -149,25 +294,12 @@ function processWordInput(word: string, elementContainer: HTMLElement, resultDiv
                     currentWord.className = 'element-word';
                     permutationRow.appendChild(currentWord);
                     
-                    // Track all word spacers in this permutation
-                    const spacers: HTMLElement[] = [];
-                    
-                    // Track spaces between words
-                    let inWord = true;
-                    
                     results.forEach(result => {
                         // Handle space marker - create a new word container
                         if ('isSpace' in result && result.isSpace) {
-                            const spacerDiv = document.createElement('div');
-                            spacerDiv.className = 'word-spacer';
-                            permutationRow.appendChild(spacerDiv);
-                            spacers.push(spacerDiv);
-                            
-                            // Start a new word container after the spacer
                             currentWord = document.createElement('div');
                             currentWord.className = 'element-word';
                             permutationRow.appendChild(currentWord);
-                            inWord = true; // Mark that we're starting a new word
                             return;
                         }
                         
@@ -185,29 +317,22 @@ function processWordInput(word: string, elementContainer: HTMLElement, resultDiv
                         currentWord.appendChild(elementDiv);
                     });
                     
-                    // Function to check spacer visibility based on word wrapping
-                    const updateSpacerVisibility = () => {
-                        spacers.forEach(spacer => {
-                            const prevWord = spacer.previousElementSibling as HTMLElement;
-                            const nextWord = spacer.nextElementSibling as HTMLElement;
-                            
-                            if (prevWord && nextWord) {
-                                const prevRect = prevWord.getBoundingClientRect();
-                                const nextRect = nextWord.getBoundingClientRect();
-                                
-                                // If words are not on the same line, hide the spacer
-                                if (Math.abs(prevRect.top - nextRect.top) > 10) {
-                                    spacer.classList.add('word-spacer-hidden');
-                                } else {
-                                    spacer.classList.remove('word-spacer-hidden');
-                                }
-                            }
-                        });
-                    };
+                    // Add download button for this permutation
+                    const downloadButton = document.createElement('button');
+                    downloadButton.className = 'download-svg-button';
+                    downloadButton.title = 'Download SVG';
+                    downloadButton.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    `;
+                    permutationRow.appendChild(downloadButton);
                     
-                    // Check initially after rendering and on window resize
-                    setTimeout(updateSpacerVisibility, 10);
-                    window.addEventListener('resize', updateSpacerVisibility);
+                    // Set up download button click handler
+                    downloadButton.addEventListener('click', () => {
+                        downloadPermutationAsSVG(permutationRow, word);
+                    });
                 });
         });
     } else {
