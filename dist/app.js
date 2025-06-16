@@ -500,7 +500,7 @@ function processWordInput(word, elementContainer, resultDiv, useColoredElements 
   const elementPermutations = canBeSpelledWithElements(word);
   generateElementTypeLegend(elementPermutations);
   if (elementPermutations && elementPermutations.length > 0) {
-    resultDiv.textContent = `"${word}" can be spelled in ${elementPermutations.length} different way${elementPermutations.length > 1 ? "s" : ""}`;
+    resultDiv.textContent = elementPermutations.length > 1 ? `"${word}" can be spelled in ${elementPermutations.length} different way${elementPermutations.length > 1 ? "s" : ""}` : ``;
     if (shareButton) {
       shareButton.disabled = false;
     }

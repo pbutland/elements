@@ -17,7 +17,7 @@
       "format": "esm"
     },
     "src/app.ts": {
-      "bytes": 28371,
+      "bytes": 28409,
       "imports": [
         {
           "path": "src/element-utils.ts",
@@ -38,7 +38,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 56011
+      "bytes": 56071
     },
     "dist/app.js": {
       "imports": [],
@@ -52,10 +52,10 @@
           "bytesInOutput": 1722
         },
         "src/app.ts": {
-          "bytesInOutput": 16790
+          "bytesInOutput": 16828
         }
       },
-      "bytes": 26057
+      "bytes": 26095
     }
   }
 }

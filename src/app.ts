@@ -36,7 +36,7 @@ function generateElementTypeLegend(elementPermutations: string[][] | false = fal
         // Convert to element types - include any element that appears in any permutation
         uniqueElements.forEach(element => {
             const elementType = elementToTypeMap[element];
-            if (elementType && elementType !== ElementType.UNKNOWN && elementType !== ElementType.OTHER) {
+            if (elementType && elementType !== ElementType.UNKNOWN) {
                 usedElementTypes.add(elementType);
             }
         });
@@ -47,8 +47,8 @@ function generateElementTypeLegend(elementPermutations: string[][] | false = fal
         // Skip types that don't appear in any permutation
         if (!usedElementTypes.has(typeName as ElementType)) return;
             
-        // Skip UNKNOWN and OTHER types in the legend
-        if (key === 'UNKNOWN' || key === 'OTHER') return;
+        // Skip UNKNOWN types in the legend
+        if (key === 'UNKNOWN') return;
 
         // Get the base color for this element type
         const baseColor = elementTypeColors[typeName as ElementType];
@@ -437,7 +437,7 @@ function processWordInput(word: string, elementContainer: HTMLElement, resultDiv
     
     if (elementPermutations && elementPermutations.length > 0) {
         // Word/phrase can be spelled with element symbols
-        resultDiv.textContent = `"${word}" can be spelled in ${elementPermutations.length} different way${elementPermutations.length > 1 ? 's' : ''}`;
+        resultDiv.textContent = elementPermutations.length > 1 ? `"${word}" can be spelled in ${elementPermutations.length} different way${elementPermutations.length > 1 ? 's' : ''}` : ``;
         
         // Enable the share button if the word can be spelled
         if (shareButton) {

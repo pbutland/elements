@@ -14,7 +14,6 @@ export enum ElementType {
     NOBLE_GAS = 'Noble Gas',
     LANTHANIDE = 'Lanthanide',
     ACTINIDE = 'Actinide',
-    OTHER = 'Other',
     UNKNOWN = 'Unknown'
 }
 
@@ -55,7 +54,6 @@ export const elementTypeColors: Record<ElementType, string> = {
     [ElementType.NOBLE_GAS]: '#BBDEFB',
     [ElementType.LANTHANIDE]: '#FFE0B2',
     [ElementType.ACTINIDE]: '#F8BBD0',
-    [ElementType.OTHER]: '#E0E0E0',
     [ElementType.UNKNOWN]: '#E0E0E0'
 };
 
@@ -193,14 +191,12 @@ export const elementToTypeMap: Record<string, ElementType> = {
     'Cm': ElementType.ACTINIDE,
     'Bk': ElementType.ACTINIDE,
     'Cf': ElementType.ACTINIDE,
+    'E': ElementType.ACTINIDE,
     'Es': ElementType.ACTINIDE,
     'Fm': ElementType.ACTINIDE,
     'Md': ElementType.ACTINIDE,
     'No': ElementType.ACTINIDE,
     'Lr': ElementType.ACTINIDE,
-    
-    // Other elements/placeholders
-    'E': ElementType.OTHER
 };
 
 // Interface for element type info (for backwards compatibility)
