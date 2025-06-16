@@ -106,7 +106,8 @@
             cursor: pointer;
         }
 
-        .theme-selector input[type="radio"] {
+        .theme-selector input[type="radio"],
+        .theme-selector input[type="checkbox"] {
             margin-right: 5px;
         }
         
@@ -231,7 +232,34 @@
         .download-svg-button:active {
             transform: scale(0.95);
         }
-        
+
+        #element-type-legend {
+            display: none;
+            text-align: center;
+        }
+
+        .legend-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px;
+        }
+
+        .legend-color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            border-radius: 3px;
+        }
+
         /* Responsive styles for different screen sizes */
         @media (max-width: 768px) {
             .element-svg-content {
@@ -245,6 +273,21 @@
             .download-svg-button {
                 width: 36px;
                 height: 36px;
+            }
+
+            .legend-container {
+                gap: 8px;
+            }
+
+            .legend-item {
+                font-size: 12px;
+                margin: 3px;
+            }
+
+            .legend-color {
+                width: 16px;
+                height: 16px;
+                margin-right: 5px;
             }
         }
         
@@ -281,6 +324,9 @@
         <label>
             <input type="radio" name="theme" value="dark"> Dark Mode
         </label>
+        <label>
+            <input type="checkbox" id="colored-elements"> Coloured Elements
+        </label>
     </div>
     
     <p>Enter a word or phrase to see if it can be spelled using chemical element symbols from the periodic table.</p>
@@ -299,5 +345,12 @@
     
     <div id="result"></div>
     <div id="element-container"></div>
+    
+    <div id="element-type-legend">
+        <h3>Element Types</h3>
+        <div class="legend-container">
+            <!-- Legend items will be populated dynamically from element-types.ts -->
+        </div>
+    </div>
 </body>
 </html>

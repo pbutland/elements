@@ -1,17 +1,114 @@
 // Element word visualizer application
 import { canBeSpelledWithElements } from './element-utils';
+import { getElementTypeInfo, ElementType, elementTypeColors, darkenColor, elementToTypeMap } from './element-types';
+
+// Function to generate the legend dynamically
+function generateElementTypeLegend(elementPermutations: string[][] | false = false) {
+    const legendElement = document.getElementById('element-type-legend');
+    if (!legendElement) return;
+
+    const coloredElementsToggle = document.getElementById('colored-elements') as HTMLInputElement;
+    
+    // Only show legend if there are letters in input AND there are valid permutations
+    const shouldShowLegend = elementPermutations && elementPermutations.length > 0 && coloredElementsToggle?.checked;
+    legendElement.style.display = shouldShowLegend ? 'block' : 'none';
+
+    // If we shouldn't show the legend, no need to continue
+    if (!shouldShowLegend) return;
+
+    // Clear existing legend
+    const legendContainer = legendElement.querySelector('.legend-container') as HTMLDivElement;
+    if (!legendContainer) return;
+    
+    legendContainer.innerHTML = '';
+
+    // Get all element types that appear in any permutation
+    const usedElementTypes = new Set<ElementType>();
+    
+    if (elementPermutations && elementPermutations.length > 0) {
+        // Get all unique elements from all permutations
+        const uniqueElements = [...new Set(
+            elementPermutations.flatMap(permutation => 
+                permutation.filter(element => element !== '_SPACE_')
+            )
+        )];
+        
+        // Convert to element types - include any element that appears in any permutation
+        uniqueElements.forEach(element => {
+            const elementType = elementToTypeMap[element];
+            if (elementType && elementType !== ElementType.UNKNOWN && elementType !== ElementType.OTHER) {
+                usedElementTypes.add(elementType);
+            }
+        });
+    }
+
+    // Create a legend item for each element type that appears in any permutation
+    Object.entries(ElementType).forEach(([key, typeName]) => {
+        // Skip types that don't appear in any permutation
+        if (!usedElementTypes.has(typeName as ElementType)) return;
+            
+        // Skip UNKNOWN and OTHER types in the legend
+        if (key === 'UNKNOWN' || key === 'OTHER') return;
+
+        // Get the base color for this element type
+        const baseColor = elementTypeColors[typeName as ElementType];
+        if (!baseColor) return;
+
+        // Generate border color programmatically
+        const borderColor = darkenColor(baseColor, 25);
+
+        // Create the legend item
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+
+        // Create the color sample
+        const colorSample = document.createElement('span');
+        colorSample.className = 'legend-color';
+        colorSample.style.backgroundColor = baseColor;
+        colorSample.style.border = `2px solid ${borderColor}`;
+
+        // Add the text label
+        legendItem.appendChild(colorSample);
+        legendItem.appendChild(document.createTextNode(typeName));
+
+        // Add to the legend container
+        legendContainer.appendChild(legendItem);
+    });
+}
 
 // Function to modify SVG content to make it responsive and theme-aware
-function makeSvgResponsive(svgContent: string): string {
-    return svgContent
-        .replace(/<rect([^>]*)fill="white"/, '<rect$1fill="var(--bg-color)"')
-        .replace(/<text([^>]*?)>([^<]*)<\/text>/g, '<text$1 fill="var(--text-color)">$2</text>')
-        .replace(/<svg([^>]*)/, '<svg$1 class="element-svg-content"')
-        .replace(/stroke="black"/g, 'stroke="var(--text-color)"');
+function makeSvgResponsive(svgContent: string, useColoredElements: boolean = false, elementSymbol: string = ''): string {
+    let modifiedSvg = svgContent;
+    
+    if (useColoredElements && elementSymbol) {
+        // For colored elements mode, apply the element type coloring directly
+        const typeInfo = getElementTypeInfo(elementSymbol);
+        
+        // Apply the background color to the rectangle and border color to the stroke
+        modifiedSvg = modifiedSvg.replace(
+            /<rect([^>]*)fill="white"([^>]*)stroke="black"([^>]*)>/,
+            `<rect$1fill="${typeInfo.backgroundColor}"$2stroke="${typeInfo.borderColor}"$3>`
+        );
+        
+        // Add the SVG content class without modifying text colors
+        modifiedSvg = modifiedSvg.replace(
+            /<svg([^>]*)/,
+            '<svg$1 class="element-svg-content"'
+        );
+    } else {
+        // For normal theme-aware mode (non-colored)
+        modifiedSvg = svgContent
+            .replace(/<rect([^>]*)fill="white"/, '<rect$1fill="var(--bg-color)"')
+            .replace(/<text([^>]*?)>([^<]*)<\/text>/g, '<text$1 fill="var(--text-color)">$2</text>')
+            .replace(/<svg([^>]*)/, '<svg$1 class="element-svg-content"')
+            .replace(/stroke="black"/g, 'stroke="var(--text-color)"');
+    }
+    
+    return modifiedSvg;
 }
 
 // Function to create a downloadable SVG from a permutation row
-function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): void {
+function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string, useColoredElements: boolean = false): void {
     // Get all word containers in the permutation row
     const wordContainers = permutationRow.querySelectorAll('.element-word');
     if (!wordContainers.length) return;
@@ -135,13 +232,14 @@ function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): vo
         
         // Starting X position for elements within this word
         const wordStartX = currentX;
-        let wordCurrentX = 0;
-        
-        // Process each SVG element in this word
+        let wordCurrentX = 0;            // Process each SVG element in this word
         wordSvgElements.forEach((svg: Element) => {
             const svgElement = svg as SVGSVGElement;
             const { width, height } = getOriginalSvgDimensions(svgElement);
-        
+            
+            // Get the element symbol from the data attribute
+            const elementSymbol = svgElement.getAttribute('data-element') || '';
+            
             // Get the original SVG's XML content
             const svgString = new XMLSerializer().serializeToString(svgElement);
             
@@ -151,36 +249,51 @@ function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): vo
             const originalSvg = svgDoc.documentElement;
             
             // Replace CSS variables with computed values in the SVG content
-            const replaceVarsInElement = (el: Element) => {
-                // Handle text elements
-                if (el.tagName.toLowerCase() === 'text' && el.hasAttribute('fill')) {
-                    const fillValue = el.getAttribute('fill');
-                    if (fillValue?.includes('var(--')) {
-                        el.setAttribute('fill', computedStyle.color);
-                    }
-                }
-                
-                // Handle rect elements
-                if (el.tagName.toLowerCase() === 'rect' && el.hasAttribute('fill')) {
-                    const fillValue = el.getAttribute('fill');
-                    if (fillValue?.includes('var(--')) {
-                        if (fillValue?.includes('--bg-color')) {
+            const replaceVarsInElement = (el: Element, elementSymbol: string = '', useColoredElements: boolean = false) => {
+                // For rectangle elements
+                if (el.tagName.toLowerCase() === 'rect') {
+                    if (useColoredElements && elementSymbol) {
+                        // When colored elements are enabled, apply element-specific colors
+                        const { backgroundColor, borderColor } = getElementTypeInfo(elementSymbol);
+                        el.setAttribute('fill', backgroundColor);
+                        el.setAttribute('stroke', borderColor);
+                    } else {
+                        // Standard theme handling
+                        const fillValue = el.getAttribute('fill');
+                        if (fillValue?.includes('var(--bg-color)') || fillValue === 'white') {
                             el.setAttribute('fill', computedStyle.backgroundColor);
+                        }
+                        
+                        const strokeValue = el.getAttribute('stroke');
+                        if (strokeValue?.includes('var(--text-color)') || strokeValue === 'black') {
+                            el.setAttribute('stroke', computedStyle.color);
                         }
                     }
                 }
                 
-                // Handle stroke attributes on any element
-                if (el.hasAttribute('stroke')) {
+                // For text elements - always keep them readable
+                if (el.tagName.toLowerCase() === 'text') {
+                    // In colored mode, text stays black (default)
+                    // In theme mode, apply the text color from the theme
+                    if (!useColoredElements && el.hasAttribute('fill')) {
+                        const fillValue = el.getAttribute('fill');
+                        if (fillValue?.includes('var(--text-color)')) {
+                            el.setAttribute('fill', computedStyle.color);
+                        }
+                    }
+                }
+                
+                // Handle any other elements with stroke attributes
+                if (!useColoredElements && el.hasAttribute('stroke') && el.tagName.toLowerCase() !== 'rect') {
                     const strokeValue = el.getAttribute('stroke');
-                    if (strokeValue?.includes('var(--')) {
+                    if (strokeValue?.includes('var(--text-color)') || strokeValue === 'black') {
                         el.setAttribute('stroke', computedStyle.color);
                     }
                 }
                 
                 // Process children recursively
                 Array.from(el.children).forEach(child => {
-                    replaceVarsInElement(child);
+                    replaceVarsInElement(child, elementSymbol, useColoredElements);
                 });
             };
             
@@ -201,7 +314,7 @@ function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): vo
                     `translate(${elementX}, ${(maxHeight - height) / 2}) ${currentTransform}`);
                 
                 // Replace variables
-                replaceVarsInElement(clonedContent);
+                replaceVarsInElement(clonedContent, elementSymbol, useColoredElements);
                 
                 // Add to the word group
                 wordGroup.appendChild(clonedContent);
@@ -215,7 +328,7 @@ function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): vo
                     if (child.nodeType === Node.ELEMENT_NODE && (child as Element).tagName.toLowerCase() !== 'svg') {
                         const importedNode = document.importNode(child, true);
                         if (importedNode.nodeType === Node.ELEMENT_NODE) {
-                            replaceVarsInElement(importedNode as Element);
+                            replaceVarsInElement(importedNode as Element, elementSymbol, useColoredElements);
                         }
                         newGroup.appendChild(importedNode);
                     }
@@ -297,11 +410,11 @@ function getQueryParam(param: string): string | null {
 }
 
 // Function to process word input
-function processWordInput(word: string, elementContainer: HTMLElement, resultDiv: HTMLElement): void {
+function processWordInput(word: string, elementContainer: HTMLElement, resultDiv: HTMLElement, useColoredElements: boolean = false): void {
     // Clear previous results
     elementContainer.innerHTML = '';
     resultDiv.textContent = '';
-    
+
     // Get share button
     const shareButton = document.getElementById('share-button') as HTMLButtonElement;
     
@@ -311,11 +424,16 @@ function processWordInput(word: string, elementContainer: HTMLElement, resultDiv
     }
     
     if (!word) {
+        // If no word, make sure the legend is hidden
+        generateElementTypeLegend();
         return;
     }
     
     // Check if the word/phrase can be spelled using element symbols
     const elementPermutations = canBeSpelledWithElements(word);
+    
+    // Update the legend with element permutations
+    generateElementTypeLegend(elementPermutations);
     
     if (elementPermutations && elementPermutations.length > 0) {
         // Word/phrase can be spelled with element symbols
@@ -409,8 +527,14 @@ function processWordInput(word: string, elementContainer: HTMLElement, resultDiv
                         if ('error' in result && result.error) {
                             elementDiv.textContent = `Error loading ${result.element}`;
                         } else if ('svgContent' in result) {
-                            // Make SVG responsive
-                            elementDiv.innerHTML = makeSvgResponsive(result.svgContent);
+                            // Make SVG responsive - pass the element symbol and the colored option to apply correct colors
+                            elementDiv.innerHTML = makeSvgResponsive(result.svgContent, useColoredElements, result.element);
+                            
+                            // Store the element symbol as a data attribute for download SVG function
+                            const svgElement = elementDiv.querySelector('.element-svg-content');
+                            if (svgElement) {
+                                svgElement.setAttribute('data-element', result.element);
+                            }
                         }
                         
                         // Add the element to the current word container
@@ -431,7 +555,7 @@ function processWordInput(word: string, elementContainer: HTMLElement, resultDiv
                     
                     // Set up download button click handler
                     downloadButton.addEventListener('click', () => {
-                        downloadPermutationAsSVG(permutationRow, word);
+                        downloadPermutationAsSVG(permutationRow, word, useColoredElements);
                     });
                 });
         });
@@ -455,6 +579,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeRadios = document.querySelectorAll('input[name="theme"]') as NodeListOf<HTMLInputElement>;
     const shareButton = document.getElementById('share-button') as HTMLButtonElement;
     
+    // Color theme option
+    let useColoredElements = false;
+    
     // Check for query parameter 'word'
     const wordFromParam = getQueryParam('word');
     
@@ -465,6 +592,20 @@ document.addEventListener('DOMContentLoaded', () => {
             setTheme(target.value as 'light' | 'dark');
         });
     });
+    
+    // Set up colored elements toggle
+    const coloredElementsToggle = document.getElementById('colored-elements') as HTMLInputElement;
+    if (coloredElementsToggle) {
+        coloredElementsToggle.addEventListener('change', () => {
+            useColoredElements = coloredElementsToggle.checked;
+            
+            // Re-process the current input with the new setting
+            const inputText = wordInput.value.trim();
+            if (inputText) {
+                processWordInput(inputText, elementContainer, resultDiv, useColoredElements);
+            }
+        });
+    }
     
     // Set up share button click handler
     shareButton.addEventListener('click', () => {
@@ -485,13 +626,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Process input as user types
     wordInput.addEventListener('input', () => {
         const inputText = wordInput.value.trim();
-        processWordInput(inputText, elementContainer, resultDiv);
+        processWordInput(inputText, elementContainer, resultDiv, useColoredElements);
     });
     
     // If there's a word parameter in the URL, use it to auto-populate input field
     if (wordFromParam) {
         wordInput.value = wordFromParam;
-        processWordInput(wordFromParam, elementContainer, resultDiv);
+        processWordInput(wordFromParam, elementContainer, resultDiv, useColoredElements);
     } else {
         // Ensure share button is disabled initially
         shareButton.disabled = true;
