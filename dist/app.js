@@ -178,20 +178,61 @@ function makeSvgResponsive(svgContent) {
   return svgContent.replace(/<rect([^>]*)fill="white"/, '<rect$1fill="var(--bg-color)"').replace(/<text([^>]*?)>([^<]*)<\/text>/g, '<text$1 fill="var(--text-color)">$2</text>').replace(/<svg([^>]*)/, '<svg$1 class="element-svg-content"').replace(/stroke="black"/g, 'stroke="var(--text-color)"');
 }
 function downloadPermutationAsSVG(permutationRow, word) {
-  const svgElements = permutationRow.querySelectorAll(".element-svg-content");
-  if (!svgElements.length) return;
+  const wordContainers = permutationRow.querySelectorAll(".element-word");
+  if (!wordContainers.length) return;
   const computedStyle = getComputedStyle(document.body);
   const bgColor = computedStyle.getPropertyValue("--bg-color").trim();
   const textColor = computedStyle.getPropertyValue("--text-color").trim();
+  const allSvgElements = permutationRow.querySelectorAll(".element-svg-content");
+  if (!allSvgElements.length) return;
+  const getOriginalSvgDimensions = (svgElement) => {
+    const svgString = new XMLSerializer().serializeToString(svgElement);
+    const parser = new DOMParser();
+    const svgDoc = parser.parseFromString(svgString, "image/svg+xml");
+    const originalSvg = svgDoc.documentElement;
+    let width = parseFloat(originalSvg.getAttribute("width") || "0");
+    let height = parseFloat(originalSvg.getAttribute("height") || "0");
+    if (width === 0 || height === 0) {
+      const viewBox = originalSvg.getAttribute("viewBox");
+      if (viewBox) {
+        const parts = viewBox.split(/\s+|,/).map(parseFloat);
+        if (parts.length === 4) {
+          width = parts[2];
+          height = parts[3];
+        }
+      }
+    }
+    if (width === 0) width = 100;
+    if (height === 0) height = 100;
+    return { width, height };
+  };
   let totalWidth = 0;
   let maxHeight = 0;
-  svgElements.forEach((svg) => {
+  let wordCount = 0;
+  allSvgElements.forEach((svg) => {
     const svgElement = svg;
-    totalWidth += svgElement.getBoundingClientRect().width;
-    maxHeight = Math.max(maxHeight, svgElement.getBoundingClientRect().height);
+    const { height } = getOriginalSvgDimensions(svgElement);
+    maxHeight = Math.max(maxHeight, height);
   });
-  totalWidth += (svgElements.length - 1) * 10;
+  wordContainers.forEach((wordContainer) => {
+    const wordSvgElements = wordContainer.querySelectorAll(".element-svg-content");
+    if (wordSvgElements.length > 0) {
+      wordCount++;
+      let wordWidth = 0;
+      wordSvgElements.forEach((svg) => {
+        const svgElement = svg;
+        const { width } = getOriginalSvgDimensions(svgElement);
+        wordWidth += width;
+      });
+      wordWidth += (wordSvgElements.length - 1) * 10;
+      totalWidth += wordWidth;
+    }
+  });
   totalWidth += 20;
+  if (wordCount > 1) {
+    totalWidth += (wordCount - 1) * 20;
+  }
+  totalWidth += wordCount * 10;
   maxHeight += 20;
   const combinedSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   combinedSvg.setAttribute("width", totalWidth.toString());
@@ -205,56 +246,73 @@ function downloadPermutationAsSVG(permutationRow, word) {
   combinedSvg.appendChild(bgRect);
   const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
   let currentX = 10;
-  svgElements.forEach((svg) => {
-    const svgElement = svg;
-    const width = svgElement.getBoundingClientRect().width;
-    const height = svgElement.getBoundingClientRect().height;
-    const svgString = new XMLSerializer().serializeToString(svgElement);
-    const elementSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    elementSvg.setAttribute("width", width.toString());
-    elementSvg.setAttribute("height", height.toString());
-    elementSvg.setAttribute("x", currentX.toString());
-    elementSvg.setAttribute("y", ((maxHeight - height) / 2).toString());
-    const parser = new DOMParser();
-    const svgDoc = parser.parseFromString(svgString, "image/svg+xml");
-    const originalSvg = svgDoc.documentElement;
-    if (originalSvg.hasAttribute("viewBox")) {
-      elementSvg.setAttribute("viewBox", originalSvg.getAttribute("viewBox"));
-    }
-    const replaceVarsInElement = (el) => {
-      if (el.tagName.toLowerCase() === "text" && el.hasAttribute("fill")) {
-        const fillValue = el.getAttribute("fill");
-        if (fillValue?.includes("var(--")) {
-          el.setAttribute("fill", computedStyle.color);
-        }
-      }
-      if (el.tagName.toLowerCase() === "rect" && el.hasAttribute("fill")) {
-        const fillValue = el.getAttribute("fill");
-        if (fillValue?.includes("var(--")) {
-          if (fillValue?.includes("--bg-color")) {
-            el.setAttribute("fill", computedStyle.backgroundColor);
+  wordContainers.forEach((wordContainer) => {
+    const wordSvgElements = wordContainer.querySelectorAll(".element-svg-content");
+    if (wordSvgElements.length === 0) return;
+    const wordGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.appendChild(wordGroup);
+    const wordStartX = currentX;
+    let wordCurrentX = 0;
+    wordSvgElements.forEach((svg) => {
+      const svgElement = svg;
+      const { width, height } = getOriginalSvgDimensions(svgElement);
+      const svgString = new XMLSerializer().serializeToString(svgElement);
+      const parser = new DOMParser();
+      const svgDoc = parser.parseFromString(svgString, "image/svg+xml");
+      const originalSvg = svgDoc.documentElement;
+      const replaceVarsInElement = (el) => {
+        if (el.tagName.toLowerCase() === "text" && el.hasAttribute("fill")) {
+          const fillValue = el.getAttribute("fill");
+          if (fillValue?.includes("var(--")) {
+            el.setAttribute("fill", computedStyle.color);
           }
         }
-      }
-      if (el.hasAttribute("stroke")) {
-        const strokeValue = el.getAttribute("stroke");
-        if (strokeValue?.includes("var(--")) {
-          el.setAttribute("stroke", computedStyle.color);
+        if (el.tagName.toLowerCase() === "rect" && el.hasAttribute("fill")) {
+          const fillValue = el.getAttribute("fill");
+          if (fillValue?.includes("var(--")) {
+            if (fillValue?.includes("--bg-color")) {
+              el.setAttribute("fill", computedStyle.backgroundColor);
+            }
+          }
         }
+        if (el.hasAttribute("stroke")) {
+          const strokeValue = el.getAttribute("stroke");
+          if (strokeValue?.includes("var(--")) {
+            el.setAttribute("stroke", computedStyle.color);
+          }
+        }
+        Array.from(el.children).forEach((child) => {
+          replaceVarsInElement(child);
+        });
+      };
+      let contentElement = originalSvg.querySelector("g");
+      const elementX = wordStartX + wordCurrentX;
+      if (contentElement) {
+        const clonedContent = contentElement.cloneNode(true);
+        const currentTransform = clonedContent.getAttribute("transform") || "";
+        clonedContent.setAttribute(
+          "transform",
+          `translate(${elementX}, ${(maxHeight - height) / 2}) ${currentTransform}`
+        );
+        replaceVarsInElement(clonedContent);
+        wordGroup.appendChild(clonedContent);
+      } else {
+        const newGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        newGroup.setAttribute("transform", `translate(${elementX}, ${(maxHeight - height) / 2})`);
+        Array.from(originalSvg.childNodes).forEach((child) => {
+          if (child.nodeType === Node.ELEMENT_NODE && child.tagName.toLowerCase() !== "svg") {
+            const importedNode = document.importNode(child, true);
+            if (importedNode.nodeType === Node.ELEMENT_NODE) {
+              replaceVarsInElement(importedNode);
+            }
+            newGroup.appendChild(importedNode);
+          }
+        });
+        wordGroup.appendChild(newGroup);
       }
-      Array.from(el.children).forEach((child) => {
-        replaceVarsInElement(child);
-      });
-    };
-    Array.from(originalSvg.childNodes).forEach((child) => {
-      const importedNode = document.importNode(child, true);
-      if (importedNode.nodeType === Node.ELEMENT_NODE) {
-        replaceVarsInElement(importedNode);
-      }
-      elementSvg.appendChild(importedNode);
+      wordCurrentX += width + 10;
     });
-    group.appendChild(elementSvg);
-    currentX += width + 10;
+    currentX += wordCurrentX + 20;
   });
   combinedSvg.appendChild(group);
   const svgData = new XMLSerializer().serializeToString(combinedSvg);

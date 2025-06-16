@@ -12,29 +12,96 @@ function makeSvgResponsive(svgContent: string): string {
 
 // Function to create a downloadable SVG from a permutation row
 function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): void {
-    // Get all SVG elements in the permutation row
-    const svgElements = permutationRow.querySelectorAll('.element-svg-content');
-    if (!svgElements.length) return;
+    // Get all word containers in the permutation row
+    const wordContainers = permutationRow.querySelectorAll('.element-word');
+    if (!wordContainers.length) return;
     
     // Get computed colors from CSS variables for SVG export
     const computedStyle = getComputedStyle(document.body);
     const bgColor = computedStyle.getPropertyValue('--bg-color').trim();
     const textColor = computedStyle.getPropertyValue('--text-color').trim();
     
+    // Get all SVG elements for validation
+    const allSvgElements = permutationRow.querySelectorAll('.element-svg-content');
+    if (!allSvgElements.length) return;
+    
+    // Helper function to get original SVG dimensions
+    const getOriginalSvgDimensions = (svgElement: SVGSVGElement): { width: number, height: number } => {
+        // Parse the SVG content
+        const svgString = new XMLSerializer().serializeToString(svgElement);
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
+        const originalSvg = svgDoc.documentElement;
+        
+        // Try to get width and height from attributes first
+        let width = parseFloat(originalSvg.getAttribute('width') || '0');
+        let height = parseFloat(originalSvg.getAttribute('height') || '0');
+        
+        // If not available, try to get from viewBox
+        if (width === 0 || height === 0) {
+            const viewBox = originalSvg.getAttribute('viewBox');
+            if (viewBox) {
+                const parts = viewBox.split(/\s+|,/).map(parseFloat);
+                if (parts.length === 4) {
+                    width = parts[2];
+                    height = parts[3];
+                }
+            }
+        }
+        
+        // Use fallback values if still not available
+        if (width === 0) width = 100;
+        if (height === 0) height = 100;
+        
+        return { width, height };
+    };
+    
     // Calculate dimensions based on the SVG elements
     let totalWidth = 0;
     let maxHeight = 0;
+    let wordCount = 0;
     
-    // Calculate total width and maximum height
-    svgElements.forEach((svg) => {
+    // First pass to calculate max height across all elements
+    allSvgElements.forEach((svg: Element) => {
         const svgElement = svg as SVGSVGElement;
-        totalWidth += svgElement.getBoundingClientRect().width;
-        maxHeight = Math.max(maxHeight, svgElement.getBoundingClientRect().height);
+        const { height } = getOriginalSvgDimensions(svgElement);
+        maxHeight = Math.max(maxHeight, height);
+    });
+    
+    // Calculate total width, considering word grouping
+    wordContainers.forEach((wordContainer) => {
+        const wordSvgElements = wordContainer.querySelectorAll('.element-svg-content');
+        if (wordSvgElements.length > 0) {
+            wordCount++;
+            let wordWidth = 0;
+            
+            // Calculate width for this word
+            wordSvgElements.forEach((svg: Element) => {
+                const svgElement = svg as SVGSVGElement;
+                const { width } = getOriginalSvgDimensions(svgElement);
+                wordWidth += width;
+            });
+            
+            // Add spacing between elements within the word
+            wordWidth += (wordSvgElements.length - 1) * 10;
+            
+            totalWidth += wordWidth;
+        }
     });
     
     // Add some padding
-    totalWidth += (svgElements.length - 1) * 10;  // 10px spacing between elements
     totalWidth += 20;  // 10px padding on each side
+    
+    // Add extra spacing between words (20px between words)
+    if (wordCount > 1) {
+        totalWidth += (wordCount - 1) * 20;
+    }
+    
+    // Account for the extra spacing that's added after the last element of each word
+    // When positioning elements, we add extra 10px spacing after every element including the last one
+    // but that space isn't needed for the last element in each word
+    totalWidth += wordCount * 10;
+    
     maxHeight += 20;   // 10px padding on top and bottom
     
     // Start creating the combined SVG
@@ -57,79 +124,112 @@ function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string): vo
     // Current X position for placing elements
     let currentX = 10;  // Start with 10px padding
     
-    // Process each SVG element
-    svgElements.forEach((svg) => {
-        const svgElement = svg as SVGSVGElement;
-        const width = svgElement.getBoundingClientRect().width;
-        const height = svgElement.getBoundingClientRect().height;
+    // Process each word container and its SVG elements
+    wordContainers.forEach((wordContainer) => {
+        const wordSvgElements = wordContainer.querySelectorAll('.element-svg-content');
+        if (wordSvgElements.length === 0) return;
         
-        // Instead of extracting content, generate a new SVG for each element
-        // Get the original SVG's XML content
-        const svgString = new XMLSerializer().serializeToString(svgElement);
+        // Create a group for this word
+        const wordGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        group.appendChild(wordGroup);
         
-        // Create a new SVG from scratch with proper positioning
-        const elementSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        elementSvg.setAttribute('width', width.toString());
-        elementSvg.setAttribute('height', height.toString());
-        elementSvg.setAttribute('x', currentX.toString());
-        elementSvg.setAttribute('y', ((maxHeight - height) / 2).toString());
+        // Starting X position for elements within this word
+        const wordStartX = currentX;
+        let wordCurrentX = 0;
         
-        // Parse the original SVG content as a document
-        const parser = new DOMParser();
-        const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
-        const originalSvg = svgDoc.documentElement;
+        // Process each SVG element in this word
+        wordSvgElements.forEach((svg: Element) => {
+            const svgElement = svg as SVGSVGElement;
+            const { width, height } = getOriginalSvgDimensions(svgElement);
         
-        // Get the viewBox from the original SVG to preserve aspect ratio and positioning
-        if (originalSvg.hasAttribute('viewBox')) {
-            elementSvg.setAttribute('viewBox', originalSvg.getAttribute('viewBox')!);
-        }
-        
-        // Replace CSS variables with computed values in the SVG content
-        const replaceVarsInElement = (el: Element) => {
-            // Handle text elements
-            if (el.tagName.toLowerCase() === 'text' && el.hasAttribute('fill')) {
-                const fillValue = el.getAttribute('fill');
-                if (fillValue?.includes('var(--')) {
-                    el.setAttribute('fill', computedStyle.color);
-                }
-            }
+            // Get the original SVG's XML content
+            const svgString = new XMLSerializer().serializeToString(svgElement);
             
-            // Handle rect elements
-            if (el.tagName.toLowerCase() === 'rect' && el.hasAttribute('fill')) {
-                const fillValue = el.getAttribute('fill');
-                if (fillValue?.includes('var(--')) {
-                    if (fillValue?.includes('--bg-color')) {
-                        el.setAttribute('fill', computedStyle.backgroundColor);
+            // Parse the original SVG content as a document
+            const parser = new DOMParser();
+            const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
+            const originalSvg = svgDoc.documentElement;
+            
+            // Replace CSS variables with computed values in the SVG content
+            const replaceVarsInElement = (el: Element) => {
+                // Handle text elements
+                if (el.tagName.toLowerCase() === 'text' && el.hasAttribute('fill')) {
+                    const fillValue = el.getAttribute('fill');
+                    if (fillValue?.includes('var(--')) {
+                        el.setAttribute('fill', computedStyle.color);
                     }
                 }
-            }
-            
-            // Handle stroke attributes on any element
-            if (el.hasAttribute('stroke')) {
-                const strokeValue = el.getAttribute('stroke');
-                if (strokeValue?.includes('var(--')) {
-                    el.setAttribute('stroke', computedStyle.color);
+                
+                // Handle rect elements
+                if (el.tagName.toLowerCase() === 'rect' && el.hasAttribute('fill')) {
+                    const fillValue = el.getAttribute('fill');
+                    if (fillValue?.includes('var(--')) {
+                        if (fillValue?.includes('--bg-color')) {
+                            el.setAttribute('fill', computedStyle.backgroundColor);
+                        }
+                    }
                 }
+                
+                // Handle stroke attributes on any element
+                if (el.hasAttribute('stroke')) {
+                    const strokeValue = el.getAttribute('stroke');
+                    if (strokeValue?.includes('var(--')) {
+                        el.setAttribute('stroke', computedStyle.color);
+                    }
+                }
+                
+                // Process children recursively
+                Array.from(el.children).forEach(child => {
+                    replaceVarsInElement(child);
+                });
+            };
+            
+            // Extract content from original SVG directly
+            // Most element SVGs have their content in a g tag
+            let contentElement = originalSvg.querySelector('g');
+            
+            // Element position within the word group
+            const elementX = wordStartX + wordCurrentX;
+            
+            if (contentElement) {
+                // Clone the content element
+                const clonedContent = contentElement.cloneNode(true) as Element;
+                
+                // Apply necessary transformations to position the element
+                const currentTransform = clonedContent.getAttribute('transform') || '';
+                clonedContent.setAttribute('transform', 
+                    `translate(${elementX}, ${(maxHeight - height) / 2}) ${currentTransform}`);
+                
+                // Replace variables
+                replaceVarsInElement(clonedContent);
+                
+                // Add to the word group
+                wordGroup.appendChild(clonedContent);
+            } else {
+                // If no g tag found, create a group for this element
+                const newGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                newGroup.setAttribute('transform', `translate(${elementX}, ${(maxHeight - height) / 2})`);
+                
+                // Copy all child nodes except the svg tag itself
+                Array.from(originalSvg.childNodes).forEach(child => {
+                    if (child.nodeType === Node.ELEMENT_NODE && (child as Element).tagName.toLowerCase() !== 'svg') {
+                        const importedNode = document.importNode(child, true);
+                        if (importedNode.nodeType === Node.ELEMENT_NODE) {
+                            replaceVarsInElement(importedNode as Element);
+                        }
+                        newGroup.appendChild(importedNode);
+                    }
+                });
+                
+                // Add to the word group
+                wordGroup.appendChild(newGroup);
             }
             
-            // Process children recursively
-            Array.from(el.children).forEach(child => {
-                replaceVarsInElement(child);
-            });
-        };
-        
-        // Import and copy all child nodes from the original SVG
-        // This preserves their original positions
-        Array.from(originalSvg.childNodes).forEach(child => {
-            const importedNode = document.importNode(child, true);
-            if (importedNode.nodeType === Node.ELEMENT_NODE) {
-                replaceVarsInElement(importedNode as Element);
-            }
-            elementSvg.appendChild(importedNode);
+            wordCurrentX += width + 10;  // Add spacing between elements within the word
         });
         
-        group.appendChild(elementSvg);
-        currentX += width + 10;  // Add spacing
+        // Move to the next word's starting position (with extra spacing between words)
+        currentX += wordCurrentX + 20;  // Add extra space (20px) between words
     });
     
     combinedSvg.appendChild(group);
