@@ -1,7 +1,7 @@
 {
   "inputs": {
     "src/element-types.ts": {
-      "bytes": 9659,
+      "bytes": 9761,
       "imports": [],
       "format": "esm"
     },
@@ -38,7 +38,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 58864
+      "bytes": 58987
     },
     "dist/app.js": {
       "imports": [],
@@ -46,7 +46,7 @@
       "entryPoint": "src/app.ts",
       "inputs": {
         "src/element-types.ts": {
-          "bytesInOutput": 9256
+          "bytesInOutput": 9364
         },
         "src/element-utils.ts": {
           "bytesInOutput": 1943
@@ -55,7 +55,7 @@
           "bytesInOutput": 17230
         }
       },
-      "bytes": 28525
+      "bytes": 28633
     }
   }
 }

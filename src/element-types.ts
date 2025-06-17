@@ -210,8 +210,9 @@ export const elementToTypeMap: Record<string, ElementType> = {
     'az': ElementType.FICTIONAL, // Azbantium - Fictional mineral from Doctor Who which is 400 times harder than diamond
     'da': ElementType.FICTIONAL, // Dalekanium - Fictional metal from Doctor Who, used in Dalek construction
     'di': ElementType.FICTIONAL, // Dilithium - Fictional crystal used in Star Trek for warp drives
+    'fn': ElementType.FICTIONAL, // Feminum - Indestructible metal that forms Wonder Woman's bracelets
     'g': ElementType.FICTIONAL, // Gravitonium - Fictional element from Marvel's Agents of S.H.I.E.L.D.
-    'j': ElementType.FICTIONAL, // Jeddium - Named after Jedi from Star Wars
+    'j': ElementType.FICTIONAL, // Jedite - Named after Jedi from Star Wars
     'ju': ElementType.FICTIONAL, // Jumbonium - Fictional element from Futurama
     'l': ElementType.FICTIONAL, // Latinum - Precious material from Star Trek
     'm': ElementType.FICTIONAL, // Mithril - Fictional metal from Lord of the Rings

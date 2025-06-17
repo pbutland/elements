@@ -185,10 +185,12 @@ var elementToTypeMap = {
   // Dalekanium - Fictional metal from Doctor Who, used in Dalek construction
   "di": "Fictional" /* FICTIONAL */,
   // Dilithium - Fictional crystal used in Star Trek for warp drives
+  "fn": "Fictional" /* FICTIONAL */,
+  // Feminum - Indestructible metal that forms Wonder Woman's bracelets
   "g": "Fictional" /* FICTIONAL */,
   // Gravitonium - Fictional element from Marvel's Agents of S.H.I.E.L.D.
   "j": "Fictional" /* FICTIONAL */,
-  // Jeddium - Named after Jedi from Star Wars
+  // Jedite - Named after Jedi from Star Wars
   "ju": "Fictional" /* FICTIONAL */,
   // Jumbonium - Fictional element from Futurama
   "l": "Fictional" /* FICTIONAL */,
