@@ -11,7 +11,7 @@
     <text x="75" y="105" font-family="Arial, sans-serif" font-size="80" font-weight="bold" text-anchor="middle">Z</text>
     
     <!-- Element name -->
-    <text x="75" y="140" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Zexonite</text>
+    <text x="75" y="140" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Zexonyte</text>
     
     <!-- Atomic mass -->
     <text x="75" y="165" font-family="Arial, sans-serif" font-size="16" text-anchor="middle">329.91</text>

@@ -179,22 +179,36 @@ var elementToTypeMap = {
   // Fictional Elements for missing letters
   "a": "Fictional" /* FICTIONAL */,
   // Adamantium - Fictional super-strong metal from Marvel comics
+  "az": "Fictional" /* FICTIONAL */,
+  // Azbantium - Fictional mineral from Doctor Who which is 400 times harder than diamond
+  "da": "Fictional" /* FICTIONAL */,
+  // Dalekanium - Fictional metal from Doctor Who, used in Dalek construction
+  "di": "Fictional" /* FICTIONAL */,
+  // Dilithium - Fictional crystal used in Star Trek for warp drives
   "g": "Fictional" /* FICTIONAL */,
   // Gravitonium - Fictional element from Marvel's Agents of S.H.I.E.L.D.
   "j": "Fictional" /* FICTIONAL */,
   // Jeddium - Named after Jedi from Star Wars
+  "ju": "Fictional" /* FICTIONAL */,
+  // Jumbonium - Fictional element from Futurama
   "l": "Fictional" /* FICTIONAL */,
   // Latinum - Precious material from Star Trek
   "m": "Fictional" /* FICTIONAL */,
   // Mithril - Fictional metal from Lord of the Rings
+  "oc": "Fictional" /* FICTIONAL */,
+  // Octiron - Fictional element from Discworld
   "q": "Fictional" /* FICTIONAL */,
   // Quirium - From Elite universe, an artificial element used as a fuel
   "r": "Fictional" /* FICTIONAL */,
   // Rhodinium - From Star Trek universe, a rare metallic element
+  "ub": "Fictional" /* FICTIONAL */,
+  // Unobtainium - A substance with the exact properties needed for a piece of hardware or other item of use, but not obtainable
+  "ur": "Fictional" /* FICTIONAL */,
+  // Uridium - Fictional metal named in the 1986 computer game Uridium
   "x": "Fictional" /* FICTIONAL */,
   // Xonium - Based on X-Men
   "z": "Fictional" /* FICTIONAL */
-  // Zexonite - From Doctor Who, a very strong alloy used in Dalek construction
+  // Zexonyte - In the video game Earthbound, a material that is harvested from meteorites
 };
 function getElementTypeInfo(element) {
   const elementType = elementToTypeMap[element] || "Unknown" /* UNKNOWN */;
