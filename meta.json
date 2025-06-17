@@ -1,12 +1,12 @@
 {
   "inputs": {
     "src/element-types.ts": {
-      "bytes": 8182,
+      "bytes": 8897,
       "imports": [],
       "format": "esm"
     },
     "src/element-utils.ts": {
-      "bytes": 3919,
+      "bytes": 3961,
       "imports": [
         {
           "path": "src/element-types.ts",
@@ -17,7 +17,7 @@
       "format": "esm"
     },
     "src/app.ts": {
-      "bytes": 28343,
+      "bytes": 28892,
       "imports": [
         {
           "path": "src/element-utils.ts",
@@ -38,7 +38,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 56107
+      "bytes": 57955
     },
     "dist/app.js": {
       "imports": [],
@@ -46,16 +46,16 @@
       "entryPoint": "src/app.ts",
       "inputs": {
         "src/element-types.ts": {
-          "bytesInOutput": 7564
+          "bytesInOutput": 8452
         },
         "src/element-utils.ts": {
-          "bytesInOutput": 1722
+          "bytesInOutput": 1943
         },
         "src/app.ts": {
-          "bytesInOutput": 16770
+          "bytesInOutput": 17230
         }
       },
-      "bytes": 26152
+      "bytes": 27721
     }
   }
 }

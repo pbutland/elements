@@ -10,6 +10,7 @@ var ElementType = /* @__PURE__ */ ((ElementType2) => {
   ElementType2["NOBLE_GAS"] = "Noble Gas";
   ElementType2["LANTHANIDE"] = "Lanthanide";
   ElementType2["ACTINIDE"] = "Actinide";
+  ElementType2["FICTIONAL"] = "Fictional";
   ElementType2["UNKNOWN"] = "Unknown";
   return ElementType2;
 })(ElementType || {});
@@ -35,149 +36,168 @@ var elementTypeColors = {
   ["Noble Gas" /* NOBLE_GAS */]: "#cc9fc9",
   ["Lanthanide" /* LANTHANIDE */]: "#ea9dc4",
   ["Actinide" /* ACTINIDE */]: "#e0a9cd",
+  ["Fictional" /* FICTIONAL */]: "#8dcfff",
   ["Unknown" /* UNKNOWN */]: "#E0E0E0"
 };
 var elementToTypeMap = {
   // Alkali Metals
-  "H": "Nonmetal" /* NONMETAL */,
-  "Li": "Alkali Metal" /* ALKALI_METAL */,
-  "Na": "Alkali Metal" /* ALKALI_METAL */,
-  "K": "Alkali Metal" /* ALKALI_METAL */,
-  "Rb": "Alkali Metal" /* ALKALI_METAL */,
-  "Cs": "Alkali Metal" /* ALKALI_METAL */,
-  "Fr": "Alkali Metal" /* ALKALI_METAL */,
+  "h": "Nonmetal" /* NONMETAL */,
+  "li": "Alkali Metal" /* ALKALI_METAL */,
+  "na": "Alkali Metal" /* ALKALI_METAL */,
+  "k": "Alkali Metal" /* ALKALI_METAL */,
+  "rb": "Alkali Metal" /* ALKALI_METAL */,
+  "cs": "Alkali Metal" /* ALKALI_METAL */,
+  "fr": "Alkali Metal" /* ALKALI_METAL */,
   // Alkaline Earth Metals
-  "Be": "Alkaline Earth" /* ALKALINE_EARTH */,
-  "Mg": "Alkaline Earth" /* ALKALINE_EARTH */,
-  "Ca": "Alkaline Earth" /* ALKALINE_EARTH */,
-  "Sr": "Alkaline Earth" /* ALKALINE_EARTH */,
-  "Ba": "Alkaline Earth" /* ALKALINE_EARTH */,
-  "Ra": "Alkaline Earth" /* ALKALINE_EARTH */,
+  "be": "Alkaline Earth" /* ALKALINE_EARTH */,
+  "mg": "Alkaline Earth" /* ALKALINE_EARTH */,
+  "ca": "Alkaline Earth" /* ALKALINE_EARTH */,
+  "sr": "Alkaline Earth" /* ALKALINE_EARTH */,
+  "ba": "Alkaline Earth" /* ALKALINE_EARTH */,
+  "ra": "Alkaline Earth" /* ALKALINE_EARTH */,
   // Transition Metals
-  "Sc": "Transition Metal" /* TRANSITION_METAL */,
-  "Ti": "Transition Metal" /* TRANSITION_METAL */,
-  "V": "Transition Metal" /* TRANSITION_METAL */,
-  "Cr": "Transition Metal" /* TRANSITION_METAL */,
-  "Mn": "Transition Metal" /* TRANSITION_METAL */,
-  "Fe": "Transition Metal" /* TRANSITION_METAL */,
-  "Co": "Transition Metal" /* TRANSITION_METAL */,
-  "Ni": "Transition Metal" /* TRANSITION_METAL */,
-  "Cu": "Transition Metal" /* TRANSITION_METAL */,
-  "Zn": "Transition Metal" /* TRANSITION_METAL */,
-  "Y": "Transition Metal" /* TRANSITION_METAL */,
-  "Zr": "Transition Metal" /* TRANSITION_METAL */,
-  "Nb": "Transition Metal" /* TRANSITION_METAL */,
-  "Mo": "Transition Metal" /* TRANSITION_METAL */,
-  "Tc": "Transition Metal" /* TRANSITION_METAL */,
-  "Ru": "Transition Metal" /* TRANSITION_METAL */,
-  "Rh": "Transition Metal" /* TRANSITION_METAL */,
-  "Pd": "Transition Metal" /* TRANSITION_METAL */,
-  "Ag": "Transition Metal" /* TRANSITION_METAL */,
-  "Cd": "Transition Metal" /* TRANSITION_METAL */,
-  "Hf": "Transition Metal" /* TRANSITION_METAL */,
-  "Ta": "Transition Metal" /* TRANSITION_METAL */,
-  "W": "Transition Metal" /* TRANSITION_METAL */,
-  "Re": "Transition Metal" /* TRANSITION_METAL */,
-  "Os": "Transition Metal" /* TRANSITION_METAL */,
-  "Ir": "Transition Metal" /* TRANSITION_METAL */,
-  "Pt": "Transition Metal" /* TRANSITION_METAL */,
-  "Au": "Transition Metal" /* TRANSITION_METAL */,
-  "Hg": "Transition Metal" /* TRANSITION_METAL */,
-  "Rf": "Transition Metal" /* TRANSITION_METAL */,
-  "Db": "Transition Metal" /* TRANSITION_METAL */,
-  "Sg": "Transition Metal" /* TRANSITION_METAL */,
-  "Bh": "Transition Metal" /* TRANSITION_METAL */,
-  "Hs": "Transition Metal" /* TRANSITION_METAL */,
-  "Mt": "Transition Metal" /* TRANSITION_METAL */,
-  "Ds": "Transition Metal" /* TRANSITION_METAL */,
-  "Rg": "Transition Metal" /* TRANSITION_METAL */,
+  "sc": "Transition Metal" /* TRANSITION_METAL */,
+  "ti": "Transition Metal" /* TRANSITION_METAL */,
+  "v": "Transition Metal" /* TRANSITION_METAL */,
+  "cr": "Transition Metal" /* TRANSITION_METAL */,
+  "mn": "Transition Metal" /* TRANSITION_METAL */,
+  "fe": "Transition Metal" /* TRANSITION_METAL */,
+  "co": "Transition Metal" /* TRANSITION_METAL */,
+  "ni": "Transition Metal" /* TRANSITION_METAL */,
+  "cu": "Transition Metal" /* TRANSITION_METAL */,
+  "zn": "Transition Metal" /* TRANSITION_METAL */,
+  "y": "Transition Metal" /* TRANSITION_METAL */,
+  "zr": "Transition Metal" /* TRANSITION_METAL */,
+  "nb": "Transition Metal" /* TRANSITION_METAL */,
+  "mo": "Transition Metal" /* TRANSITION_METAL */,
+  "tc": "Transition Metal" /* TRANSITION_METAL */,
+  "ru": "Transition Metal" /* TRANSITION_METAL */,
+  "rh": "Transition Metal" /* TRANSITION_METAL */,
+  "pd": "Transition Metal" /* TRANSITION_METAL */,
+  "ag": "Transition Metal" /* TRANSITION_METAL */,
+  "cd": "Transition Metal" /* TRANSITION_METAL */,
+  "hf": "Transition Metal" /* TRANSITION_METAL */,
+  "ta": "Transition Metal" /* TRANSITION_METAL */,
+  "w": "Transition Metal" /* TRANSITION_METAL */,
+  "re": "Transition Metal" /* TRANSITION_METAL */,
+  "os": "Transition Metal" /* TRANSITION_METAL */,
+  "ir": "Transition Metal" /* TRANSITION_METAL */,
+  "pt": "Transition Metal" /* TRANSITION_METAL */,
+  "au": "Transition Metal" /* TRANSITION_METAL */,
+  "hg": "Transition Metal" /* TRANSITION_METAL */,
+  "rf": "Transition Metal" /* TRANSITION_METAL */,
+  "db": "Transition Metal" /* TRANSITION_METAL */,
+  "sg": "Transition Metal" /* TRANSITION_METAL */,
+  "bh": "Transition Metal" /* TRANSITION_METAL */,
+  "hs": "Transition Metal" /* TRANSITION_METAL */,
+  "mt": "Transition Metal" /* TRANSITION_METAL */,
+  "ds": "Transition Metal" /* TRANSITION_METAL */,
+  "rg": "Transition Metal" /* TRANSITION_METAL */,
   // Basic Metals (Post-Transition Metals)
-  "Al": "Basic Metal" /* BASIC_METAL */,
-  "Ga": "Basic Metal" /* BASIC_METAL */,
-  "In": "Basic Metal" /* BASIC_METAL */,
-  "Sn": "Basic Metal" /* BASIC_METAL */,
-  "Tl": "Basic Metal" /* BASIC_METAL */,
-  "Pb": "Basic Metal" /* BASIC_METAL */,
-  "Bi": "Basic Metal" /* BASIC_METAL */,
-  "Po": "Basic Metal" /* BASIC_METAL */,
-  "Cn": "Basic Metal" /* BASIC_METAL */,
-  "Nh": "Basic Metal" /* BASIC_METAL */,
-  "Fl": "Basic Metal" /* BASIC_METAL */,
-  "Mc": "Basic Metal" /* BASIC_METAL */,
-  "Lv": "Basic Metal" /* BASIC_METAL */,
+  "al": "Basic Metal" /* BASIC_METAL */,
+  "ga": "Basic Metal" /* BASIC_METAL */,
+  "in": "Basic Metal" /* BASIC_METAL */,
+  "sn": "Basic Metal" /* BASIC_METAL */,
+  "tl": "Basic Metal" /* BASIC_METAL */,
+  "pb": "Basic Metal" /* BASIC_METAL */,
+  "bi": "Basic Metal" /* BASIC_METAL */,
+  "po": "Basic Metal" /* BASIC_METAL */,
+  "cn": "Basic Metal" /* BASIC_METAL */,
+  "nh": "Basic Metal" /* BASIC_METAL */,
+  "fl": "Basic Metal" /* BASIC_METAL */,
+  "mc": "Basic Metal" /* BASIC_METAL */,
+  "lv": "Basic Metal" /* BASIC_METAL */,
   // Metalloids
-  "B": "Metalloid" /* METALLOID */,
-  "Si": "Metalloid" /* METALLOID */,
-  "Ge": "Metalloid" /* METALLOID */,
-  "As": "Metalloid" /* METALLOID */,
-  "Sb": "Metalloid" /* METALLOID */,
-  "Te": "Metalloid" /* METALLOID */,
-  "At": "Metalloid" /* METALLOID */,
+  "b": "Metalloid" /* METALLOID */,
+  "si": "Metalloid" /* METALLOID */,
+  "ge": "Metalloid" /* METALLOID */,
+  "as": "Metalloid" /* METALLOID */,
+  "sb": "Metalloid" /* METALLOID */,
+  "te": "Metalloid" /* METALLOID */,
+  "at": "Metalloid" /* METALLOID */,
   // Nonmetals
-  "C": "Nonmetal" /* NONMETAL */,
-  "N": "Nonmetal" /* NONMETAL */,
-  "O": "Nonmetal" /* NONMETAL */,
-  "P": "Nonmetal" /* NONMETAL */,
-  "S": "Nonmetal" /* NONMETAL */,
-  "Se": "Nonmetal" /* NONMETAL */,
+  "c": "Nonmetal" /* NONMETAL */,
+  "n": "Nonmetal" /* NONMETAL */,
+  "o": "Nonmetal" /* NONMETAL */,
+  "p": "Nonmetal" /* NONMETAL */,
+  "s": "Nonmetal" /* NONMETAL */,
+  "se": "Nonmetal" /* NONMETAL */,
   // Halogens
-  "F": "Halogen" /* HALOGEN */,
-  "Cl": "Halogen" /* HALOGEN */,
-  "Br": "Halogen" /* HALOGEN */,
-  "I": "Halogen" /* HALOGEN */,
-  "Ts": "Halogen" /* HALOGEN */,
+  "f": "Halogen" /* HALOGEN */,
+  "cl": "Halogen" /* HALOGEN */,
+  "br": "Halogen" /* HALOGEN */,
+  "i": "Halogen" /* HALOGEN */,
+  "ts": "Halogen" /* HALOGEN */,
   // Noble Gases
-  "He": "Noble Gas" /* NOBLE_GAS */,
-  "Ne": "Noble Gas" /* NOBLE_GAS */,
-  "Ar": "Noble Gas" /* NOBLE_GAS */,
-  "Kr": "Noble Gas" /* NOBLE_GAS */,
-  "Xe": "Noble Gas" /* NOBLE_GAS */,
-  "Rn": "Noble Gas" /* NOBLE_GAS */,
-  "Og": "Noble Gas" /* NOBLE_GAS */,
+  "he": "Noble Gas" /* NOBLE_GAS */,
+  "ne": "Noble Gas" /* NOBLE_GAS */,
+  "ar": "Noble Gas" /* NOBLE_GAS */,
+  "kr": "Noble Gas" /* NOBLE_GAS */,
+  "xe": "Noble Gas" /* NOBLE_GAS */,
+  "rn": "Noble Gas" /* NOBLE_GAS */,
+  "og": "Noble Gas" /* NOBLE_GAS */,
   // Lanthanides
-  "La": "Lanthanide" /* LANTHANIDE */,
-  "Ce": "Lanthanide" /* LANTHANIDE */,
-  "Pr": "Lanthanide" /* LANTHANIDE */,
-  "Nd": "Lanthanide" /* LANTHANIDE */,
-  "Pm": "Lanthanide" /* LANTHANIDE */,
-  "Sm": "Lanthanide" /* LANTHANIDE */,
-  "Eu": "Lanthanide" /* LANTHANIDE */,
-  "Gd": "Lanthanide" /* LANTHANIDE */,
-  "Tb": "Lanthanide" /* LANTHANIDE */,
-  "Dy": "Lanthanide" /* LANTHANIDE */,
-  "Ho": "Lanthanide" /* LANTHANIDE */,
-  "Er": "Lanthanide" /* LANTHANIDE */,
-  "Tm": "Lanthanide" /* LANTHANIDE */,
-  "Yb": "Lanthanide" /* LANTHANIDE */,
-  "Lu": "Lanthanide" /* LANTHANIDE */,
+  "la": "Lanthanide" /* LANTHANIDE */,
+  "ce": "Lanthanide" /* LANTHANIDE */,
+  "pr": "Lanthanide" /* LANTHANIDE */,
+  "nd": "Lanthanide" /* LANTHANIDE */,
+  "pm": "Lanthanide" /* LANTHANIDE */,
+  "sm": "Lanthanide" /* LANTHANIDE */,
+  "eu": "Lanthanide" /* LANTHANIDE */,
+  "gd": "Lanthanide" /* LANTHANIDE */,
+  "tb": "Lanthanide" /* LANTHANIDE */,
+  "dy": "Lanthanide" /* LANTHANIDE */,
+  "ho": "Lanthanide" /* LANTHANIDE */,
+  "er": "Lanthanide" /* LANTHANIDE */,
+  "tm": "Lanthanide" /* LANTHANIDE */,
+  "yb": "Lanthanide" /* LANTHANIDE */,
+  "lu": "Lanthanide" /* LANTHANIDE */,
   // Actinides
-  "Ac": "Actinide" /* ACTINIDE */,
-  "Th": "Actinide" /* ACTINIDE */,
-  "Pa": "Actinide" /* ACTINIDE */,
-  "U": "Actinide" /* ACTINIDE */,
-  "Np": "Actinide" /* ACTINIDE */,
-  "Pu": "Actinide" /* ACTINIDE */,
-  "Am": "Actinide" /* ACTINIDE */,
-  "Cm": "Actinide" /* ACTINIDE */,
-  "Bk": "Actinide" /* ACTINIDE */,
-  "Cf": "Actinide" /* ACTINIDE */,
-  "E": "Actinide" /* ACTINIDE */,
-  "Es": "Actinide" /* ACTINIDE */,
-  "Fm": "Actinide" /* ACTINIDE */,
-  "Md": "Actinide" /* ACTINIDE */,
-  "No": "Actinide" /* ACTINIDE */,
-  "Lr": "Actinide" /* ACTINIDE */,
+  "ac": "Actinide" /* ACTINIDE */,
+  "th": "Actinide" /* ACTINIDE */,
+  "pa": "Actinide" /* ACTINIDE */,
+  "u": "Actinide" /* ACTINIDE */,
+  "np": "Actinide" /* ACTINIDE */,
+  "pu": "Actinide" /* ACTINIDE */,
+  "am": "Actinide" /* ACTINIDE */,
+  "cm": "Actinide" /* ACTINIDE */,
+  "bk": "Actinide" /* ACTINIDE */,
+  "cf": "Actinide" /* ACTINIDE */,
+  "e": "Actinide" /* ACTINIDE */,
+  "es": "Actinide" /* ACTINIDE */,
+  "fm": "Actinide" /* ACTINIDE */,
+  "md": "Actinide" /* ACTINIDE */,
+  "no": "Actinide" /* ACTINIDE */,
+  "lr": "Actinide" /* ACTINIDE */,
   // Isotopes
-  "D": "Nonmetal" /* NONMETAL */,
+  "d": "Nonmetal" /* NONMETAL */,
   // Deuterium (Hydrogen isotope)
-  "T": "Nonmetal" /* NONMETAL */,
+  "t": "Nonmetal" /* NONMETAL */,
   // Tritium (Hydrogen isotope)
-  "Tn": "Noble Gas" /* NOBLE_GAS */
+  "tn": "Noble Gas" /* NOBLE_GAS */,
   // Thoron (Radon isotope)
+  // Fictional Elements for missing letters
+  "a": "Fictional" /* FICTIONAL */,
+  // Adamantium - Fictional super-strong metal from Marvel comics
+  "g": "Fictional" /* FICTIONAL */,
+  // Gravitonium - Fictional element from Marvel's Agents of S.H.I.E.L.D.
+  "j": "Fictional" /* FICTIONAL */,
+  // Jeddium - Named after Jedi from Star Wars
+  "l": "Fictional" /* FICTIONAL */,
+  // Latinum - Precious material from Star Trek
+  "m": "Fictional" /* FICTIONAL */,
+  // Mithril - Fictional metal from Lord of the Rings
+  "q": "Fictional" /* FICTIONAL */,
+  // Quirium - From Elite universe, an artificial element used as a fuel
+  "r": "Fictional" /* FICTIONAL */,
+  // Rhodinium - From Star Trek universe, a rare metallic element
+  "x": "Fictional" /* FICTIONAL */,
+  // Xonium - Based on X-Men
+  "z": "Fictional" /* FICTIONAL */
+  // Zexonite - From Doctor Who, a very strong alloy used in Dalek construction
 };
 function getElementTypeInfo(element) {
-  const normalizedElement = element.charAt(0).toUpperCase() + element.slice(1).toLowerCase();
-  const elementType = elementToTypeMap[normalizedElement] || "Unknown" /* UNKNOWN */;
+  const elementType = elementToTypeMap[element] || "Unknown" /* UNKNOWN */;
   const baseColor = elementTypeColors[elementType];
   const borderColor = darkenColor(baseColor, 25);
   return {
@@ -188,28 +208,30 @@ function getElementTypeInfo(element) {
 }
 
 // src/element-utils.ts
-var elements = Object.keys(elementToTypeMap);
-var elementSetLower = new Set(elements.map((e) => e.toLowerCase()));
-var elementMap = {};
-elements.forEach((e) => {
-  elementMap[e.toLowerCase()] = e;
-});
-function canBeSpelledWithElements(wordOrPhrase) {
+function canBeSpelledWithElements(wordOrPhrase, includeFictionalElements) {
   const words = wordOrPhrase.split(" ").filter((word) => word.length > 0);
   if (words.length === 0) return false;
   if (words.length === 1) {
-    return processWord(words[0]);
+    return processWord(words[0], includeFictionalElements);
   }
   const wordPermutations = [];
   for (const word of words) {
-    const permutations = processWord(word);
+    const permutations = processWord(word, includeFictionalElements);
     if (!permutations) return false;
     wordPermutations.push(permutations);
   }
   return combineWordPermutations(wordPermutations);
 }
-function processWord(word) {
+function processWord(word, includeFictionalElements) {
   word = word.toLowerCase();
+  const filteredElements = Object.entries(elementToTypeMap).filter(([symbol, type]) => {
+    return includeFictionalElements || type !== "Fictional";
+  }).map(([symbol, type]) => {
+    return symbol.toLowerCase();
+  }).reduce((set, symbol) => {
+    set.add(symbol);
+    return set;
+  }, /* @__PURE__ */ new Set());
   const dp = new Array(word.length + 1).fill(false);
   dp[0] = true;
   const elementPathsAt = new Array(word.length + 1);
@@ -218,10 +240,10 @@ function processWord(word) {
     elementPathsAt[i] = [];
     for (let j = 1; j <= Math.min(i, 2); j++) {
       const symbol = word.substring(i - j, i);
-      if (dp[i - j] && elementSetLower.has(symbol)) {
+      if (dp[i - j] && filteredElements.has(symbol)) {
         dp[i] = true;
         for (const path of elementPathsAt[i - j]) {
-          elementPathsAt[i].push([...path, elementMap[symbol]]);
+          elementPathsAt[i].push([...path, symbol.toLowerCase()]);
         }
       }
     }
@@ -490,9 +512,13 @@ function getQueryParam(param) {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(param);
 }
-function processWordInput(word, elementContainer, resultDiv, useColoredElements = false) {
+function processWordInput(word, elementContainer, resultDiv) {
   elementContainer.innerHTML = "";
   resultDiv.textContent = "";
+  const coloredElementsToggle = document.getElementById("colored-elements");
+  const useColoredElements = coloredElementsToggle?.checked;
+  const fictionalElementsToggle = document.getElementById("fictional-elements");
+  const useFictionalElements = fictionalElementsToggle?.checked;
   const shareButton = document.getElementById("share-button");
   if (shareButton) {
     shareButton.disabled = true;
@@ -501,7 +527,7 @@ function processWordInput(word, elementContainer, resultDiv, useColoredElements 
     generateElementTypeLegend();
     return;
   }
-  const elementPermutations = canBeSpelledWithElements(word);
+  const elementPermutations = canBeSpelledWithElements(word, useFictionalElements);
   generateElementTypeLegend(elementPermutations);
   if (elementPermutations && elementPermutations.length > 0) {
     resultDiv.textContent = elementPermutations.length > 1 ? `"${word}" can be spelled in ${elementPermutations.length} different way${elementPermutations.length > 1 ? "s" : ""}` : ``;
@@ -598,7 +624,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const elementContainer = document.getElementById("element-container");
   const themeRadios = document.querySelectorAll('input[name="theme"]');
   const shareButton = document.getElementById("share-button");
-  let useColoredElements = false;
   const wordFromParam = getQueryParam("word");
   themeRadios.forEach((radio) => {
     radio.addEventListener("change", (e) => {
@@ -609,10 +634,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const coloredElementsToggle = document.getElementById("colored-elements");
   if (coloredElementsToggle) {
     coloredElementsToggle.addEventListener("change", () => {
-      useColoredElements = coloredElementsToggle.checked;
       const inputText = wordInput.value.trim();
       if (inputText) {
-        processWordInput(inputText, elementContainer, resultDiv, useColoredElements);
+        processWordInput(inputText, elementContainer, resultDiv);
+      }
+    });
+  }
+  const fictionalElementsToggle = document.getElementById("fictional-elements");
+  if (fictionalElementsToggle) {
+    fictionalElementsToggle.addEventListener("change", () => {
+      const inputText = wordInput.value.trim();
+      if (inputText) {
+        processWordInput(inputText, elementContainer, resultDiv);
       }
     });
   }
@@ -629,11 +662,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   wordInput.addEventListener("input", () => {
     const inputText = wordInput.value.trim();
-    processWordInput(inputText, elementContainer, resultDiv, useColoredElements);
+    processWordInput(inputText, elementContainer, resultDiv);
   });
   if (wordFromParam) {
     wordInput.value = wordFromParam;
-    processWordInput(wordFromParam, elementContainer, resultDiv, useColoredElements);
+    processWordInput(wordFromParam, elementContainer, resultDiv);
   } else {
     shareButton.disabled = true;
   }

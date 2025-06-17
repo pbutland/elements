@@ -14,6 +14,7 @@ export enum ElementType {
     NOBLE_GAS = 'Noble Gas',
     LANTHANIDE = 'Lanthanide',
     ACTINIDE = 'Actinide',
+    FICTIONAL = 'Fictional',
     UNKNOWN = 'Unknown'
 }
 
@@ -54,154 +55,166 @@ export const elementTypeColors: Record<ElementType, string> = {
     [ElementType.NOBLE_GAS]: '#cc9fc9',
     [ElementType.LANTHANIDE]: '#ea9dc4',
     [ElementType.ACTINIDE]: '#e0a9cd',
+    [ElementType.FICTIONAL]: '#8dcfff',
     [ElementType.UNKNOWN]: '#E0E0E0'
 };
 
 // Map element symbols to their types
 export const elementToTypeMap: Record<string, ElementType> = {
     // Alkali Metals
-    'H': ElementType.NONMETAL,
-    'Li': ElementType.ALKALI_METAL,
-    'Na': ElementType.ALKALI_METAL,
-    'K': ElementType.ALKALI_METAL,
-    'Rb': ElementType.ALKALI_METAL,
-    'Cs': ElementType.ALKALI_METAL,
-    'Fr': ElementType.ALKALI_METAL,
+    'h': ElementType.NONMETAL,
+    'li': ElementType.ALKALI_METAL,
+    'na': ElementType.ALKALI_METAL,
+    'k': ElementType.ALKALI_METAL,
+    'rb': ElementType.ALKALI_METAL,
+    'cs': ElementType.ALKALI_METAL,
+    'fr': ElementType.ALKALI_METAL,
     
     // Alkaline Earth Metals
-    'Be': ElementType.ALKALINE_EARTH,
-    'Mg': ElementType.ALKALINE_EARTH,
-    'Ca': ElementType.ALKALINE_EARTH,
-    'Sr': ElementType.ALKALINE_EARTH,
-    'Ba': ElementType.ALKALINE_EARTH,
-    'Ra': ElementType.ALKALINE_EARTH,
+    'be': ElementType.ALKALINE_EARTH,
+    'mg': ElementType.ALKALINE_EARTH,
+    'ca': ElementType.ALKALINE_EARTH,
+    'sr': ElementType.ALKALINE_EARTH,
+    'ba': ElementType.ALKALINE_EARTH,
+    'ra': ElementType.ALKALINE_EARTH,
     
     // Transition Metals
-    'Sc': ElementType.TRANSITION_METAL,
-    'Ti': ElementType.TRANSITION_METAL,
-    'V': ElementType.TRANSITION_METAL,
-    'Cr': ElementType.TRANSITION_METAL,
-    'Mn': ElementType.TRANSITION_METAL,
-    'Fe': ElementType.TRANSITION_METAL,
-    'Co': ElementType.TRANSITION_METAL,
-    'Ni': ElementType.TRANSITION_METAL,
-    'Cu': ElementType.TRANSITION_METAL,
-    'Zn': ElementType.TRANSITION_METAL,
-    'Y': ElementType.TRANSITION_METAL,
-    'Zr': ElementType.TRANSITION_METAL,
-    'Nb': ElementType.TRANSITION_METAL,
-    'Mo': ElementType.TRANSITION_METAL,
-    'Tc': ElementType.TRANSITION_METAL,
-    'Ru': ElementType.TRANSITION_METAL,
-    'Rh': ElementType.TRANSITION_METAL,
-    'Pd': ElementType.TRANSITION_METAL,
-    'Ag': ElementType.TRANSITION_METAL,
-    'Cd': ElementType.TRANSITION_METAL,
-    'Hf': ElementType.TRANSITION_METAL,
-    'Ta': ElementType.TRANSITION_METAL,
-    'W': ElementType.TRANSITION_METAL,
-    'Re': ElementType.TRANSITION_METAL,
-    'Os': ElementType.TRANSITION_METAL,
-    'Ir': ElementType.TRANSITION_METAL,
-    'Pt': ElementType.TRANSITION_METAL,
-    'Au': ElementType.TRANSITION_METAL,
-    'Hg': ElementType.TRANSITION_METAL,
-    'Rf': ElementType.TRANSITION_METAL,
-    'Db': ElementType.TRANSITION_METAL,
-    'Sg': ElementType.TRANSITION_METAL,
-    'Bh': ElementType.TRANSITION_METAL,
-    'Hs': ElementType.TRANSITION_METAL,
-    'Mt': ElementType.TRANSITION_METAL,
-    'Ds': ElementType.TRANSITION_METAL,
-    'Rg': ElementType.TRANSITION_METAL,
+    'sc': ElementType.TRANSITION_METAL,
+    'ti': ElementType.TRANSITION_METAL,
+    'v': ElementType.TRANSITION_METAL,
+    'cr': ElementType.TRANSITION_METAL,
+    'mn': ElementType.TRANSITION_METAL,
+    'fe': ElementType.TRANSITION_METAL,
+    'co': ElementType.TRANSITION_METAL,
+    'ni': ElementType.TRANSITION_METAL,
+    'cu': ElementType.TRANSITION_METAL,
+    'zn': ElementType.TRANSITION_METAL,
+    'y': ElementType.TRANSITION_METAL,
+    'zr': ElementType.TRANSITION_METAL,
+    'nb': ElementType.TRANSITION_METAL,
+    'mo': ElementType.TRANSITION_METAL,
+    'tc': ElementType.TRANSITION_METAL,
+    'ru': ElementType.TRANSITION_METAL,
+    'rh': ElementType.TRANSITION_METAL,
+    'pd': ElementType.TRANSITION_METAL,
+    'ag': ElementType.TRANSITION_METAL,
+    'cd': ElementType.TRANSITION_METAL,
+    'hf': ElementType.TRANSITION_METAL,
+    'ta': ElementType.TRANSITION_METAL,
+    'w': ElementType.TRANSITION_METAL,
+    're': ElementType.TRANSITION_METAL,
+    'os': ElementType.TRANSITION_METAL,
+    'ir': ElementType.TRANSITION_METAL,
+    'pt': ElementType.TRANSITION_METAL,
+    'au': ElementType.TRANSITION_METAL,
+    'hg': ElementType.TRANSITION_METAL,
+    'rf': ElementType.TRANSITION_METAL,
+    'db': ElementType.TRANSITION_METAL,
+    'sg': ElementType.TRANSITION_METAL,
+    'bh': ElementType.TRANSITION_METAL,
+    'hs': ElementType.TRANSITION_METAL,
+    'mt': ElementType.TRANSITION_METAL,
+    'ds': ElementType.TRANSITION_METAL,
+    'rg': ElementType.TRANSITION_METAL,
     
     // Basic Metals (Post-Transition Metals)
-    'Al': ElementType.BASIC_METAL,
-    'Ga': ElementType.BASIC_METAL,
-    'In': ElementType.BASIC_METAL,
-    'Sn': ElementType.BASIC_METAL,
-    'Tl': ElementType.BASIC_METAL,
-    'Pb': ElementType.BASIC_METAL,
-    'Bi': ElementType.BASIC_METAL,
-    'Po': ElementType.BASIC_METAL,
-    'Cn': ElementType.BASIC_METAL,
-    'Nh': ElementType.BASIC_METAL,
-    'Fl': ElementType.BASIC_METAL,
-    'Mc': ElementType.BASIC_METAL,
-    'Lv': ElementType.BASIC_METAL,
+    'al': ElementType.BASIC_METAL,
+    'ga': ElementType.BASIC_METAL,
+    'in': ElementType.BASIC_METAL,
+    'sn': ElementType.BASIC_METAL,
+    'tl': ElementType.BASIC_METAL,
+    'pb': ElementType.BASIC_METAL,
+    'bi': ElementType.BASIC_METAL,
+    'po': ElementType.BASIC_METAL,
+    'cn': ElementType.BASIC_METAL,
+    'nh': ElementType.BASIC_METAL,
+    'fl': ElementType.BASIC_METAL,
+    'mc': ElementType.BASIC_METAL,
+    'lv': ElementType.BASIC_METAL,
     
     // Metalloids
-    'B': ElementType.METALLOID,
-    'Si': ElementType.METALLOID,
-    'Ge': ElementType.METALLOID,
-    'As': ElementType.METALLOID,
-    'Sb': ElementType.METALLOID,
-    'Te': ElementType.METALLOID,
-    'At': ElementType.METALLOID,
+    'b': ElementType.METALLOID,
+    'si': ElementType.METALLOID,
+    'ge': ElementType.METALLOID,
+    'as': ElementType.METALLOID,
+    'sb': ElementType.METALLOID,
+    'te': ElementType.METALLOID,
+    'at': ElementType.METALLOID,
     
     // Nonmetals
-    'C': ElementType.NONMETAL,
-    'N': ElementType.NONMETAL,
-    'O': ElementType.NONMETAL,
-    'P': ElementType.NONMETAL,
-    'S': ElementType.NONMETAL,
-    'Se': ElementType.NONMETAL,
+    'c': ElementType.NONMETAL,
+    'n': ElementType.NONMETAL,
+    'o': ElementType.NONMETAL,
+    'p': ElementType.NONMETAL,
+    's': ElementType.NONMETAL,
+    'se': ElementType.NONMETAL,
     
     // Halogens
-    'F': ElementType.HALOGEN,
-    'Cl': ElementType.HALOGEN,
-    'Br': ElementType.HALOGEN,
-    'I': ElementType.HALOGEN,
-    'Ts': ElementType.HALOGEN,
+    'f': ElementType.HALOGEN,
+    'cl': ElementType.HALOGEN,
+    'br': ElementType.HALOGEN,
+    'i': ElementType.HALOGEN,
+    'ts': ElementType.HALOGEN,
     
     // Noble Gases
-    'He': ElementType.NOBLE_GAS,
-    'Ne': ElementType.NOBLE_GAS,
-    'Ar': ElementType.NOBLE_GAS,
-    'Kr': ElementType.NOBLE_GAS,
-    'Xe': ElementType.NOBLE_GAS,
-    'Rn': ElementType.NOBLE_GAS,
-    'Og': ElementType.NOBLE_GAS,
+    'he': ElementType.NOBLE_GAS,
+    'ne': ElementType.NOBLE_GAS,
+    'ar': ElementType.NOBLE_GAS,
+    'kr': ElementType.NOBLE_GAS,
+    'xe': ElementType.NOBLE_GAS,
+    'rn': ElementType.NOBLE_GAS,
+    'og': ElementType.NOBLE_GAS,
     
     // Lanthanides
-    'La': ElementType.LANTHANIDE,
-    'Ce': ElementType.LANTHANIDE,
-    'Pr': ElementType.LANTHANIDE,
-    'Nd': ElementType.LANTHANIDE,
-    'Pm': ElementType.LANTHANIDE,
-    'Sm': ElementType.LANTHANIDE,
-    'Eu': ElementType.LANTHANIDE,
-    'Gd': ElementType.LANTHANIDE,
-    'Tb': ElementType.LANTHANIDE,
-    'Dy': ElementType.LANTHANIDE,
-    'Ho': ElementType.LANTHANIDE,
-    'Er': ElementType.LANTHANIDE,
-    'Tm': ElementType.LANTHANIDE,
-    'Yb': ElementType.LANTHANIDE,
-    'Lu': ElementType.LANTHANIDE,
+    'la': ElementType.LANTHANIDE,
+    'ce': ElementType.LANTHANIDE,
+    'pr': ElementType.LANTHANIDE,
+    'nd': ElementType.LANTHANIDE,
+    'pm': ElementType.LANTHANIDE,
+    'sm': ElementType.LANTHANIDE,
+    'eu': ElementType.LANTHANIDE,
+    'gd': ElementType.LANTHANIDE,
+    'tb': ElementType.LANTHANIDE,
+    'dy': ElementType.LANTHANIDE,
+    'ho': ElementType.LANTHANIDE,
+    'er': ElementType.LANTHANIDE,
+    'tm': ElementType.LANTHANIDE,
+    'yb': ElementType.LANTHANIDE,
+    'lu': ElementType.LANTHANIDE,
     
     // Actinides
-    'Ac': ElementType.ACTINIDE,
-    'Th': ElementType.ACTINIDE,
-    'Pa': ElementType.ACTINIDE,
-    'U': ElementType.ACTINIDE,
-    'Np': ElementType.ACTINIDE,
-    'Pu': ElementType.ACTINIDE,
-    'Am': ElementType.ACTINIDE,
-    'Cm': ElementType.ACTINIDE,
-    'Bk': ElementType.ACTINIDE,
-    'Cf': ElementType.ACTINIDE,
-    'E': ElementType.ACTINIDE,
-    'Es': ElementType.ACTINIDE,
-    'Fm': ElementType.ACTINIDE,
-    'Md': ElementType.ACTINIDE,
-    'No': ElementType.ACTINIDE,
-    'Lr': ElementType.ACTINIDE,
+    'ac': ElementType.ACTINIDE,
+    'th': ElementType.ACTINIDE,
+    'pa': ElementType.ACTINIDE,
+    'u': ElementType.ACTINIDE,
+    'np': ElementType.ACTINIDE,
+    'pu': ElementType.ACTINIDE,
+    'am': ElementType.ACTINIDE,
+    'cm': ElementType.ACTINIDE,
+    'bk': ElementType.ACTINIDE,
+    'cf': ElementType.ACTINIDE,
+    'e': ElementType.ACTINIDE,
+    'es': ElementType.ACTINIDE,
+    'fm': ElementType.ACTINIDE,
+    'md': ElementType.ACTINIDE,
+    'no': ElementType.ACTINIDE,
+    'lr': ElementType.ACTINIDE,
 
     // Isotopes
-    'D': ElementType.NONMETAL, // Deuterium (Hydrogen isotope)
-    'T': ElementType.NONMETAL, // Tritium (Hydrogen isotope)
-    'Tn': ElementType.NOBLE_GAS, // Thoron (Radon isotope)
+    'd': ElementType.NONMETAL, // Deuterium (Hydrogen isotope)
+    't': ElementType.NONMETAL, // Tritium (Hydrogen isotope)
+    'tn': ElementType.NOBLE_GAS, // Thoron (Radon isotope)
+
+    // Fictional Elements for missing letters
+    'a': ElementType.FICTIONAL, // Adamantium - Fictional super-strong metal from Marvel comics
+    'g': ElementType.FICTIONAL, // Gravitonium - Fictional element from Marvel's Agents of S.H.I.E.L.D.
+    'j': ElementType.FICTIONAL, // Jeddium - Named after Jedi from Star Wars
+    'l': ElementType.FICTIONAL, // Latinum - Precious material from Star Trek
+    'm': ElementType.FICTIONAL, // Mithril - Fictional metal from Lord of the Rings
+    'q': ElementType.FICTIONAL, // Quirium - From Elite universe, an artificial element used as a fuel
+    'r': ElementType.FICTIONAL, // Rhodinium - From Star Trek universe, a rare metallic element
+    'x': ElementType.FICTIONAL, // Xonium - Based on X-Men
+    'z': ElementType.FICTIONAL, // Zexonite - From Doctor Who, a very strong alloy used in Dalek construction
 };
 
 // Interface for element type info (for backwards compatibility)
@@ -214,15 +227,12 @@ export interface ElementTypeInfo {
 /**
  * Gets element type information for a given element symbol.
  * 
- * @param element The element symbol (case-insensitive)
+ * @param element The element symbol
  * @returns ElementTypeInfo containing type name and color information
  */
 export function getElementTypeInfo(element: string): ElementTypeInfo {
-    // Normalize element symbol (capitalize first letter, lowercase the rest)
-    const normalizedElement = element.charAt(0).toUpperCase() + element.slice(1).toLowerCase();
-    
     // Get the element type or use UNKNOWN as fallback
-    const elementType = elementToTypeMap[normalizedElement] || ElementType.UNKNOWN;
+    const elementType = elementToTypeMap[element] || ElementType.UNKNOWN;
     
     // Get the base color for this element type
     const baseColor = elementTypeColors[elementType];

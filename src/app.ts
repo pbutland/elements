@@ -410,10 +410,15 @@ function getQueryParam(param: string): string | null {
 }
 
 // Function to process word input
-function processWordInput(word: string, elementContainer: HTMLElement, resultDiv: HTMLElement, useColoredElements: boolean = false): void {
+function processWordInput(word: string, elementContainer: HTMLElement, resultDiv: HTMLElement): void {
     // Clear previous results
     elementContainer.innerHTML = '';
     resultDiv.textContent = '';
+
+    const coloredElementsToggle = document.getElementById('colored-elements') as HTMLInputElement;
+    const useColoredElements = coloredElementsToggle?.checked;
+    const fictionalElementsToggle = document.getElementById('fictional-elements') as HTMLInputElement;
+    const useFictionalElements = fictionalElementsToggle?.checked;
 
     // Get share button
     const shareButton = document.getElementById('share-button') as HTMLButtonElement;
@@ -430,7 +435,7 @@ function processWordInput(word: string, elementContainer: HTMLElement, resultDiv
     }
     
     // Check if the word/phrase can be spelled using element symbols
-    const elementPermutations = canBeSpelledWithElements(word);
+    const elementPermutations = canBeSpelledWithElements(word, useFictionalElements);
     
     // Update the legend with element permutations
     generateElementTypeLegend(elementPermutations);
@@ -579,9 +584,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeRadios = document.querySelectorAll('input[name="theme"]') as NodeListOf<HTMLInputElement>;
     const shareButton = document.getElementById('share-button') as HTMLButtonElement;
     
-    // Color theme option
-    let useColoredElements = false;
-    
     // Check for query parameter 'word'
     const wordFromParam = getQueryParam('word');
     
@@ -597,16 +599,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const coloredElementsToggle = document.getElementById('colored-elements') as HTMLInputElement;
     if (coloredElementsToggle) {
         coloredElementsToggle.addEventListener('change', () => {
-            useColoredElements = coloredElementsToggle.checked;
-            
             // Re-process the current input with the new setting
             const inputText = wordInput.value.trim();
             if (inputText) {
-                processWordInput(inputText, elementContainer, resultDiv, useColoredElements);
+                processWordInput(inputText, elementContainer, resultDiv);
             }
         });
     }
     
+    // Set up fictional elements toggle
+    const fictionalElementsToggle = document.getElementById('fictional-elements') as HTMLInputElement;
+    if (fictionalElementsToggle) {
+        fictionalElementsToggle.addEventListener('change', () => {
+            const inputText = wordInput.value.trim();
+            if (inputText) {
+                processWordInput(inputText, elementContainer, resultDiv);
+            }
+        });
+    }
+
     // Set up share button click handler
     shareButton.addEventListener('click', () => {
         // Only proceed if button is not disabled
@@ -626,13 +637,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Process input as user types
     wordInput.addEventListener('input', () => {
         const inputText = wordInput.value.trim();
-        processWordInput(inputText, elementContainer, resultDiv, useColoredElements);
+        processWordInput(inputText, elementContainer, resultDiv);
     });
     
     // If there's a word parameter in the URL, use it to auto-populate input field
     if (wordFromParam) {
         wordInput.value = wordFromParam;
-        processWordInput(wordFromParam, elementContainer, resultDiv, useColoredElements);
+        processWordInput(wordFromParam, elementContainer, resultDiv);
     } else {
         // Ensure share button is disabled initially
         shareButton.disabled = true;

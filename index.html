@@ -318,6 +318,66 @@
                 height: 32px;
             }
         }
+        
+        /* Custom tooltip styles */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .question-mark {
+            margin-left: 5px;
+        }
+        
+        .question-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-color: var(--button-bg);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: help;
+            margin-bottom: 3px;
+        }
+        
+        .tooltip {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+            pointer-events: none;
+        }
+        
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        
+        .tooltip-container:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -331,6 +391,13 @@
         </label>
         <label>
             <input type="checkbox" id="colored-elements"> Coloured
+        </label>
+        <label>
+            <input type="checkbox" id="fictional-elements" checked> Include Fictional Elements
+            <span class="tooltip-container question-mark">
+                <span class="question-icon">?</span>
+                <span class="tooltip">Include fictional elements from pop culture that fill in missing letters of the alphabet</span>
+            </span>
         </label>
     </div>
     

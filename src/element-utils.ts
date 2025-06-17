@@ -1,37 +1,25 @@
 // Element utilities for checking if words can be spelled with element symbols
 import { elementToTypeMap } from './element-types';
 
-// Get all valid element symbols from the elementToTypeMap in element-types.ts
-const elements: string[] = Object.keys(elementToTypeMap);
-
-// Create case-insensitive element set for comparisons
-const elementSetLower: Set<string> = new Set(elements.map(e => e.toLowerCase()));
-
-// Elements map with correct capitalization for output
-const elementMap: {[key: string]: string} = {};
-elements.forEach(e => {
-  elementMap[e.toLowerCase()] = e;
-});
-
 /**
  * Check if a word or phrase can be spelled using only element symbols
  * @param wordOrPhrase The word or phrase to check
  * @returns false if not possible, or an array of permutations (each permutation is an array of element symbols with special '_SPACE_' marker for word boundaries)
  */
-export function canBeSpelledWithElements(wordOrPhrase: string): string[][] | false {
+export function canBeSpelledWithElements(wordOrPhrase: string, includeFictionalElements: boolean): string[][] | false {
   // Split the input by spaces to handle multiple words
   const words = wordOrPhrase.split(' ').filter(word => word.length > 0);
   if (words.length === 0) return false;
   
   // If it's just one word, use the original algorithm
   if (words.length === 1) {
-    return processWord(words[0]);
+    return processWord(words[0], includeFictionalElements);
   }
   
   // Process each word separately
   const wordPermutations: string[][][] = [];
   for (const word of words) {
-    const permutations = processWord(word);
+    const permutations = processWord(word, includeFictionalElements);
     if (!permutations) return false; // If any word can't be spelled, the whole phrase can't be spelled
     wordPermutations.push(permutations);
   }
@@ -45,9 +33,19 @@ export function canBeSpelledWithElements(wordOrPhrase: string): string[][] | fal
  * @param word A single word without spaces
  * @returns false if not possible, or an array of permutations
  */
-function processWord(word: string): string[][] | false {
+function processWord(word: string, includeFictionalElements: boolean): string[][] | false {
   word = word.toLowerCase();
-  
+
+  const filteredElements = Object.entries(elementToTypeMap).filter(([symbol, type]) => {
+    // Filter out fictional elements if not included
+    return includeFictionalElements || type !== 'Fictional';
+  }).map(([symbol, type]) => {
+    return symbol.toLowerCase();
+  }).reduce((set, symbol) => {
+    set.add(symbol);
+    return set;
+  }, new Set<string>()); 
+
   // Dynamic programming approach to find all possible ways to split the word
   const dp: boolean[] = new Array(word.length + 1).fill(false);
   dp[0] = true; // Empty string can always be formed
@@ -64,12 +62,12 @@ function processWord(word: string): string[][] | false {
     for (let j = 1; j <= Math.min(i, 2); j++) {  // Element symbols are at most 2 characters
       const symbol = word.substring(i - j, i);
       
-      if (dp[i - j] && elementSetLower.has(symbol)) {
+      if (dp[i - j] && filteredElements.has(symbol)) {
         dp[i] = true;
         
         // For each path that leads to position (i-j), append this symbol
         for (const path of elementPathsAt[i - j]) {
-          elementPathsAt[i].push([...path, elementMap[symbol]]);
+          elementPathsAt[i].push([...path, symbol.toLowerCase()]);
         }
       }
     }
