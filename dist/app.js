@@ -10,7 +10,6 @@ var ElementType = /* @__PURE__ */ ((ElementType2) => {
   ElementType2["NOBLE_GAS"] = "Noble Gas";
   ElementType2["LANTHANIDE"] = "Lanthanide";
   ElementType2["ACTINIDE"] = "Actinide";
-  ElementType2["OTHER"] = "Other";
   ElementType2["UNKNOWN"] = "Unknown";
   return ElementType2;
 })(ElementType || {});
@@ -26,17 +25,16 @@ function darkenColor(color, percent = 20) {
   return `#${dr.toString(16).padStart(2, "0")}${dg.toString(16).padStart(2, "0")}${db.toString(16).padStart(2, "0")}`;
 }
 var elementTypeColors = {
-  ["Alkali Metal" /* ALKALI_METAL */]: "#FFCDD2",
-  ["Alkaline Earth" /* ALKALINE_EARTH */]: "#FFECB3",
-  ["Transition Metal" /* TRANSITION_METAL */]: "#C8E6C9",
-  ["Basic Metal" /* BASIC_METAL */]: "#B3E5FC",
-  ["Metalloid" /* METALLOID */]: "#E1BEE7",
-  ["Nonmetal" /* NONMETAL */]: "#FDECEB",
-  ["Halogen" /* HALOGEN */]: "#D1C4E9",
-  ["Noble Gas" /* NOBLE_GAS */]: "#BBDEFB",
-  ["Lanthanide" /* LANTHANIDE */]: "#FFE0B2",
-  ["Actinide" /* ACTINIDE */]: "#F8BBD0",
-  ["Other" /* OTHER */]: "#E0E0E0",
+  ["Alkali Metal" /* ALKALI_METAL */]: "#f8ab91",
+  ["Alkaline Earth" /* ALKALINE_EARTH */]: "#fed091",
+  ["Transition Metal" /* TRANSITION_METAL */]: "#f8f29a",
+  ["Basic Metal" /* BASIC_METAL */]: "#a9d69a",
+  ["Metalloid" /* METALLOID */]: "#a8dee6",
+  ["Nonmetal" /* NONMETAL */]: "#a1add7",
+  ["Halogen" /* HALOGEN */]: "#af9bca",
+  ["Noble Gas" /* NOBLE_GAS */]: "#cc9fc9",
+  ["Lanthanide" /* LANTHANIDE */]: "#ea9dc4",
+  ["Actinide" /* ACTINIDE */]: "#e0a9cd",
   ["Unknown" /* UNKNOWN */]: "#E0E0E0"
 };
 var elementToTypeMap = {
@@ -163,13 +161,19 @@ var elementToTypeMap = {
   "Cm": "Actinide" /* ACTINIDE */,
   "Bk": "Actinide" /* ACTINIDE */,
   "Cf": "Actinide" /* ACTINIDE */,
+  "E": "Actinide" /* ACTINIDE */,
   "Es": "Actinide" /* ACTINIDE */,
   "Fm": "Actinide" /* ACTINIDE */,
   "Md": "Actinide" /* ACTINIDE */,
   "No": "Actinide" /* ACTINIDE */,
   "Lr": "Actinide" /* ACTINIDE */,
-  // Other elements/placeholders
-  "E": "Other" /* OTHER */
+  // Isotopes
+  "D": "Nonmetal" /* NONMETAL */,
+  // Deuterium (Hydrogen isotope)
+  "T": "Nonmetal" /* NONMETAL */,
+  // Tritium (Hydrogen isotope)
+  "Tn": "Noble Gas" /* NOBLE_GAS */
+  // Thoron (Radon isotope)
 };
 function getElementTypeInfo(element) {
   const normalizedElement = element.charAt(0).toUpperCase() + element.slice(1).toLowerCase();
@@ -258,14 +262,14 @@ function generateElementTypeLegend(elementPermutations = false) {
     )];
     uniqueElements.forEach((element) => {
       const elementType = elementToTypeMap[element];
-      if (elementType && elementType !== "Unknown" /* UNKNOWN */ && elementType !== "Other" /* OTHER */) {
+      if (elementType && elementType !== "Unknown" /* UNKNOWN */) {
         usedElementTypes.add(elementType);
       }
     });
   }
   Object.entries(ElementType).forEach(([key, typeName]) => {
     if (!usedElementTypes.has(typeName)) return;
-    if (key === "UNKNOWN" || key === "OTHER") return;
+    if (key === "UNKNOWN") return;
     const baseColor = elementTypeColors[typeName];
     if (!baseColor) return;
     const borderColor = darkenColor(baseColor, 25);

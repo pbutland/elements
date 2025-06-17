@@ -1,7 +1,7 @@
 {
   "inputs": {
     "src/element-types.ts": {
-      "bytes": 8075,
+      "bytes": 8182,
       "imports": [],
       "format": "esm"
     },
@@ -17,7 +17,7 @@
       "format": "esm"
     },
     "src/app.ts": {
-      "bytes": 28409,
+      "bytes": 28343,
       "imports": [
         {
           "path": "src/element-utils.ts",
@@ -38,7 +38,7 @@
       "imports": [],
       "exports": [],
       "inputs": {},
-      "bytes": 56071
+      "bytes": 56107
     },
     "dist/app.js": {
       "imports": [],
@@ -46,16 +46,16 @@
       "entryPoint": "src/app.ts",
       "inputs": {
         "src/element-types.ts": {
-          "bytesInOutput": 7449
+          "bytesInOutput": 7564
         },
         "src/element-utils.ts": {
           "bytesInOutput": 1722
         },
         "src/app.ts": {
-          "bytesInOutput": 16828
+          "bytesInOutput": 16770
         }
       },
-      "bytes": 26095
+      "bytes": 26152
     }
   }
 }

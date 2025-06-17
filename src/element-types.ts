@@ -44,16 +44,16 @@ export function darkenColor(color: string, percent: number = 20): string {
 
 // Map element types to their base colors
 export const elementTypeColors: Record<ElementType, string> = {
-    [ElementType.ALKALI_METAL]: '#FFCDD2',
-    [ElementType.ALKALINE_EARTH]: '#FFECB3',
-    [ElementType.TRANSITION_METAL]: '#C8E6C9',
-    [ElementType.BASIC_METAL]: '#B3E5FC',
-    [ElementType.METALLOID]: '#E1BEE7',
-    [ElementType.NONMETAL]: '#FDECEB',
-    [ElementType.HALOGEN]: '#D1C4E9',
-    [ElementType.NOBLE_GAS]: '#BBDEFB',
-    [ElementType.LANTHANIDE]: '#FFE0B2',
-    [ElementType.ACTINIDE]: '#F8BBD0',
+    [ElementType.ALKALI_METAL]: '#f8ab91',
+    [ElementType.ALKALINE_EARTH]: '#fed091',
+    [ElementType.TRANSITION_METAL]: '#f8f29a',
+    [ElementType.BASIC_METAL]: '#a9d69a',
+    [ElementType.METALLOID]: '#a8dee6',
+    [ElementType.NONMETAL]: '#a1add7',
+    [ElementType.HALOGEN]: '#af9bca',
+    [ElementType.NOBLE_GAS]: '#cc9fc9',
+    [ElementType.LANTHANIDE]: '#ea9dc4',
+    [ElementType.ACTINIDE]: '#e0a9cd',
     [ElementType.UNKNOWN]: '#E0E0E0'
 };
 
@@ -197,6 +197,11 @@ export const elementToTypeMap: Record<string, ElementType> = {
     'Md': ElementType.ACTINIDE,
     'No': ElementType.ACTINIDE,
     'Lr': ElementType.ACTINIDE,
+
+    // Isotopes
+    'D': ElementType.NONMETAL, // Deuterium (Hydrogen isotope)
+    'T': ElementType.NONMETAL, // Tritium (Hydrogen isotope)
+    'Tn': ElementType.NOBLE_GAS, // Thoron (Radon isotope)
 };
 
 // Interface for element type info (for backwards compatibility)

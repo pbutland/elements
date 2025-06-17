@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="150" height="180" viewBox="0 0 150 180">
+  <g>
+    <!-- Black bordered rectangle -->
+    <rect x="0" y="0" width="150" height="180" fill="white" stroke="black" stroke-width="4" />
+    
+    <!-- Atomic number -->
+    <text x="75" y="30" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">1</text>
+    
+    <!-- Element symbol -->
+    <text x="75" y="105" font-family="Arial, sans-serif" font-size="80" font-weight="bold" text-anchor="middle">D</text>
+    
+    <!-- Element name -->
+    <text x="75" y="140" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Deuterium</text>
+    
+    <!-- Atomic mass -->
+    <text x="75" y="165" font-family="Arial, sans-serif" font-size="16" text-anchor="middle">2.01</text>
+  </g>
+</svg>
