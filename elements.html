@@ -43,8 +43,564 @@
     </div>
 
     <script>
-        // List of elements in alphabetical order by symbol
-        const elements = ["a", "ac", "ag", "al", "am", "ar", "as", "at", "au", "az", "b", "ba", "be", "bh", "bi", "bk", "br", "c", "ca", "cd", "ce", "cf", "cl", "cm", "cn", "co", "cr", "cs", "cu", "d", "da", "db", "di", "ds", "dy", "e", "er", "es", "eu", "f", "fe", "fl", "fm", "fn", "fr", "g", "ga", "gd", "ge", "h", "he", "hf", "hg", "ho", "hs", "i", "in", "ir", "j", "ju", "k", "kr", "l", "la", "li", "lr", "lu", "lv", "m", "mc", "md", "mg", "mn", "mo", "mt", "n", "na", "nb", "nd", "ne", "nh", "ni", "no", "np", "o", "oc", "og", "os", "p", "pa", "pb", "pd", "pm", "po", "pr", "pt", "pu", "q", "r", "ra", "rb", "re", "rf", "rg", "rh", "rn", "ru", "s", "sb", "sc", "se", "sg", "si", "sm", "sn", "sr", "t", "ta", "tb", "tc", "te", "th", "ti", "tl", "tm", "tn", "ts", "u", "ub", "ur", "v", "w", "x", "xe", "y", "yb", "z", "zn", "zr"];
+        const elements = [
+        {
+            "symbol": "a",
+            "name": "Adamantium"
+        },
+        {
+            "symbol": "ac",
+            "name": "Actinium"
+        },
+        {
+            "symbol": "ag",
+            "name": "Silver"
+        },
+        {
+            "symbol": "al",
+            "name": "Aluminum"
+        },
+        {
+            "symbol": "am",
+            "name": "Americium"
+        },
+        {
+            "symbol": "ar",
+            "name": "Argon"
+        },
+        {
+            "symbol": "as",
+            "name": "Arsenic"
+        },
+        {
+            "symbol": "at",
+            "name": "Astatine"
+        },
+        {
+            "symbol": "au",
+            "name": "Gold"
+        },
+        {
+            "symbol": "az",
+            "name": "Azbantium"
+        },
+        {
+            "symbol": "b",
+            "name": "Boron"
+        },
+        {
+            "symbol": "ba",
+            "name": "Barium"
+        },
+        {
+            "symbol": "be",
+            "name": "Beryllium"
+        },
+        {
+            "symbol": "bh",
+            "name": "Bohrium"
+        },
+        {
+            "symbol": "bi",
+            "name": "Bismuth"
+        },
+        {
+            "symbol": "bk",
+            "name": "Berkelium"
+        },
+        {
+            "symbol": "br",
+            "name": "Bromine"
+        },
+        {
+            "symbol": "c",
+            "name": "Carbon"
+        },
+        {
+            "symbol": "ca",
+            "name": "Calcium"
+        },
+        {
+            "symbol": "cd",
+            "name": "Cadmium"
+        },
+        {
+            "symbol": "ce",
+            "name": "Cerium"
+        },
+        {
+            "symbol": "cf",
+            "name": "Californium"
+        },
+        {
+            "symbol": "cl",
+            "name": "Chlorine"
+        },
+        {
+            "symbol": "cm",
+            "name": "Curium"
+        },
+        {
+            "symbol": "cn",
+            "name": "Copernicium"
+        },
+        {
+            "symbol": "co",
+            "name": "Cobalt"
+        },
+        {
+            "symbol": "cr",
+            "name": "Chromium"
+        },
+        {
+            "symbol": "cs",
+            "name": "Cesium"
+        },
+        {
+            "symbol": "cu",
+            "name": "Copper"
+        },
+        {
+            "symbol": "d",
+            "name": "Deuterium"
+        },
+        {
+            "symbol": "da",
+            "name": "Dalekanium"
+        },
+        {
+            "symbol": "db",
+            "name": "Dubnium"
+        },
+        {
+            "symbol": "di",
+            "name": "Dilithium"
+        },
+        {
+            "symbol": "ds",
+            "name": "Darmstadtium"
+        },
+        {
+            "symbol": "dy",
+            "name": "Dysprosium"
+        },
+        {
+            "symbol": "e",
+            "name": "Einsteinium"
+        },
+        {
+            "symbol": "er",
+            "name": "Erbium"
+        },
+        {
+            "symbol": "es",
+            "name": "Einsteinium"
+        },
+        {
+            "symbol": "eu",
+            "name": "Europium"
+        },
+        {
+            "symbol": "f",
+            "name": "Fluorine"
+        },
+        {
+            "symbol": "fe",
+            "name": "Iron"
+        },
+        {
+            "symbol": "fl",
+            "name": "Flerovium"
+        },
+        {
+            "symbol": "fm",
+            "name": "Fermium"
+        },
+        {
+            "symbol": "fn",
+            "name": "Feminum"
+        },
+        {
+            "symbol": "fr",
+            "name": "Francium"
+        },
+        {
+            "symbol": "g",
+            "name": "Gravitonium"
+        },
+        {
+            "symbol": "ga",
+            "name": "Gallium"
+        },
+        {
+            "symbol": "gd",
+            "name": "Gadolinium"
+        },
+        {
+            "symbol": "ge",
+            "name": "Germanium"
+        },
+        {
+            "symbol": "h",
+            "name": "Hydrogen"
+        },
+        {
+            "symbol": "he",
+            "name": "Helium"
+        },
+        {
+            "symbol": "hf",
+            "name": "Hafnium"
+        },
+        {
+            "symbol": "hg",
+            "name": "Mercury"
+        },
+        {
+            "symbol": "ho",
+            "name": "Holmium"
+        },
+        {
+            "symbol": "hs",
+            "name": "Hassium"
+        },
+        {
+            "symbol": "i",
+            "name": "Iodine"
+        },
+        {
+            "symbol": "in",
+            "name": "Indium"
+        },
+        {
+            "symbol": "ir",
+            "name": "Iridium"
+        },
+        {
+            "symbol": "j",
+            "name": "Jedite"
+        },
+        {
+            "symbol": "ju",
+            "name": "Jumbonium"
+        },
+        {
+            "symbol": "k",
+            "name": "Potassium"
+        },
+        {
+            "symbol": "kr",
+            "name": "Krypton"
+        },
+        {
+            "symbol": "l",
+            "name": "Latinum"
+        },
+        {
+            "symbol": "la",
+            "name": "Lanthanum"
+        },
+        {
+            "symbol": "li",
+            "name": "Lithium"
+        },
+        {
+            "symbol": "lr",
+            "name": "Lawrencium"
+        },
+        {
+            "symbol": "lu",
+            "name": "Lutetium"
+        },
+        {
+            "symbol": "lv",
+            "name": "Livermorium"
+        },
+        {
+            "symbol": "m",
+            "name": "Mithril"
+        },
+        {
+            "symbol": "mc",
+            "name": "Moscovium"
+        },
+        {
+            "symbol": "md",
+            "name": "Mendelevium"
+        },
+        {
+            "symbol": "mg",
+            "name": "Magnesium"
+        },
+        {
+            "symbol": "mn",
+            "name": "Manganese"
+        },
+        {
+            "symbol": "mo",
+            "name": "Molybdenum"
+        },
+        {
+            "symbol": "mt",
+            "name": "Meitnerium"
+        },
+        {
+            "symbol": "n",
+            "name": "Nitrogen"
+        },
+        {
+            "symbol": "na",
+            "name": "Sodium"
+        },
+        {
+            "symbol": "nb",
+            "name": "Niobium"
+        },
+        {
+            "symbol": "nd",
+            "name": "Neodymium"
+        },
+        {
+            "symbol": "ne",
+            "name": "Neon"
+        },
+        {
+            "symbol": "nh",
+            "name": "Nihonium"
+        },
+        {
+            "symbol": "ni",
+            "name": "Nickel"
+        },
+        {
+            "symbol": "no",
+            "name": "Nobelium"
+        },
+        {
+            "symbol": "np",
+            "name": "Neptunium"
+        },
+        {
+            "symbol": "o",
+            "name": "Oxygen"
+        },
+        {
+            "symbol": "oc",
+            "name": "Octiron"
+        },
+        {
+            "symbol": "og",
+            "name": "Oganesson"
+        },
+        {
+            "symbol": "os",
+            "name": "Osmium"
+        },
+        {
+            "symbol": "p",
+            "name": "Phosphorus"
+        },
+        {
+            "symbol": "pa",
+            "name": "Protactinium"
+        },
+        {
+            "symbol": "pb",
+            "name": "Lead"
+        },
+        {
+            "symbol": "pd",
+            "name": "Palladium"
+        },
+        {
+            "symbol": "pm",
+            "name": "Promethium"
+        },
+        {
+            "symbol": "po",
+            "name": "Polonium"
+        },
+        {
+            "symbol": "pr",
+            "name": "Praseodymium"
+        },
+        {
+            "symbol": "pt",
+            "name": "Platinum"
+        },
+        {
+            "symbol": "pu",
+            "name": "Plutonium"
+        },
+        {
+            "symbol": "q",
+            "name": "Quirium"
+        },
+        {
+            "symbol": "r",
+            "name": "Rhodinium"
+        },
+        {
+            "symbol": "ra",
+            "name": "Radium"
+        },
+        {
+            "symbol": "rb",
+            "name": "Rubidium"
+        },
+        {
+            "symbol": "re",
+            "name": "Rhenium"
+        },
+        {
+            "symbol": "rf",
+            "name": "Rutherfordium"
+        },
+        {
+            "symbol": "rg",
+            "name": "Roentgenium"
+        },
+        {
+            "symbol": "rh",
+            "name": "Rhodium"
+        },
+        {
+            "symbol": "rn",
+            "name": "Radon"
+        },
+        {
+            "symbol": "ru",
+            "name": "Ruthenium"
+        },
+        {
+            "symbol": "s",
+            "name": "Sulfur"
+        },
+        {
+            "symbol": "sb",
+            "name": "Antimony"
+        },
+        {
+            "symbol": "sc",
+            "name": "Scandium"
+        },
+        {
+            "symbol": "se",
+            "name": "Selenium"
+        },
+        {
+            "symbol": "sg",
+            "name": "Seaborgium"
+        },
+        {
+            "symbol": "si",
+            "name": "Silicon"
+        },
+        {
+            "symbol": "sm",
+            "name": "Samarium"
+        },
+        {
+            "symbol": "sn",
+            "name": "Tin"
+        },
+        {
+            "symbol": "sr",
+            "name": "Strontium"
+        },
+        {
+            "symbol": "t",
+            "name": "Tritium"
+        },
+        {
+            "symbol": "ta",
+            "name": "Tantalum"
+        },
+        {
+            "symbol": "tb",
+            "name": "Terbium"
+        },
+        {
+            "symbol": "tc",
+            "name": "Technetium"
+        },
+        {
+            "symbol": "te",
+            "name": "Tellurium"
+        },
+        {
+            "symbol": "th",
+            "name": "Thorium"
+        },
+        {
+            "symbol": "ti",
+            "name": "Titanium"
+        },
+        {
+            "symbol": "tl",
+            "name": "Thallium"
+        },
+        {
+            "symbol": "tm",
+            "name": "Thulium"
+        },
+        {
+            "symbol": "tn",
+            "name": "Thoron"
+        },
+        {
+            "symbol": "ts",
+            "name": "Tennessine"
+        },
+        {
+            "symbol": "u",
+            "name": "Uranium"
+        },
+        {
+            "symbol": "ub",
+            "name": "Unobtainium"
+        },
+        {
+            "symbol": "ur",
+            "name": "Uridium"
+        },
+        {
+            "symbol": "v",
+            "name": "Vanadium"
+        },
+        {
+            "symbol": "w",
+            "name": "Tungsten"
+        },
+        {
+            "symbol": "x",
+            "name": "Xonium"
+        },
+        {
+            "symbol": "xe",
+            "name": "Xenon"
+        },
+        {
+            "symbol": "y",
+            "name": "Yttrium"
+        },
+        {
+            "symbol": "yb",
+            "name": "Ytterbium"
+        },
+        {
+            "symbol": "z",
+            "name": "Zexonyte"
+        },
+        {
+            "symbol": "zn",
+            "name": "Zinc"
+        },
+        {
+            "symbol": "zr",
+            "name": "Zirconium"
+        }
+        ];
 
         // Get container element
         const container = document.getElementById('elementsContainer');
@@ -53,9 +609,13 @@
         elements.forEach(element => {
             const img = document.createElement('img');
             img.className = 'element';
-            img.src = `./elements/${element.toLowerCase()}.svg`;
+            img.src = `./elements/${element.symbol.toLowerCase()}.svg`;
             img.alt = element;
-            container.appendChild(img);
+            const anchor = document.createElement('a');
+            anchor.href = `index.html?word=${element.name.toLowerCase()}`;
+            anchor.title = element;
+            anchor.appendChild(img);
+            container.appendChild(anchor);
         });
     </script>
 </body>
