@@ -327,7 +327,7 @@ function makeSvgResponsive(svgContent, useColoredElements = false, elementSymbol
   if (useColoredElements && elementSymbol) {
     const typeInfo = getElementTypeInfo(elementSymbol);
     modifiedSvg = modifiedSvg.replace(
-      /<rect([^>]*)fill="white"([^>]*)stroke="black"([^>]*)>/,
+      /<rect([^>]*)fill="transparent"([^>]*)stroke="black"([^>]*)>/,
       `<rect$1fill="${typeInfo.backgroundColor}"$2stroke="${typeInfo.borderColor}"$3>`
     );
     modifiedSvg = modifiedSvg.replace(
@@ -335,7 +335,7 @@ function makeSvgResponsive(svgContent, useColoredElements = false, elementSymbol
       '<svg$1 class="element-svg-content"'
     );
   } else {
-    modifiedSvg = svgContent.replace(/<rect([^>]*)fill="white"/, '<rect$1fill="var(--bg-color)"').replace(/<text([^>]*?)>([^<]*)<\/text>/g, '<text$1 fill="var(--text-color)">$2</text>').replace(/<svg([^>]*)/, '<svg$1 class="element-svg-content"').replace(/stroke="black"/g, 'stroke="var(--text-color)"');
+    modifiedSvg = svgContent.replace(/<svg([^>]*)/, '<svg$1 class="element-svg-content"').replace(/stroke="black"/g, 'stroke="var(--text-color)"').replace(/fill="black"/g, 'fill="var(--text-color)"');
   }
   return modifiedSvg;
 }

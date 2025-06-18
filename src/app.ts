@@ -86,7 +86,7 @@ function makeSvgResponsive(svgContent: string, useColoredElements: boolean = fal
         
         // Apply the background color to the rectangle and border color to the stroke
         modifiedSvg = modifiedSvg.replace(
-            /<rect([^>]*)fill="white"([^>]*)stroke="black"([^>]*)>/,
+            /<rect([^>]*)fill="transparent"([^>]*)stroke="black"([^>]*)>/,
             `<rect$1fill="${typeInfo.backgroundColor}"$2stroke="${typeInfo.borderColor}"$3>`
         );
         
@@ -98,10 +98,9 @@ function makeSvgResponsive(svgContent: string, useColoredElements: boolean = fal
     } else {
         // For normal theme-aware mode (non-colored)
         modifiedSvg = svgContent
-            .replace(/<rect([^>]*)fill="white"/, '<rect$1fill="var(--bg-color)"')
-            .replace(/<text([^>]*?)>([^<]*)<\/text>/g, '<text$1 fill="var(--text-color)">$2</text>')
             .replace(/<svg([^>]*)/, '<svg$1 class="element-svg-content"')
-            .replace(/stroke="black"/g, 'stroke="var(--text-color)"');
+            .replace(/stroke="black"/g, 'stroke="var(--text-color)"')
+            .replace(/fill="black"/g, 'fill="var(--text-color)"');
     }
     
     return modifiedSvg;
@@ -197,7 +196,7 @@ function downloadPermutationAsSVG(permutationRow: HTMLElement, word: string, use
     // Account for the extra spacing that's added after the last element of each word
     // When positioning elements, we add extra 10px spacing after every element including the last one
     // but that space isn't needed for the last element in each word
-    totalWidth += wordCount * 10;
+    totalWidth += (wordCount - 1) * 10;
     
     maxHeight += 20;   // 10px padding on top and bottom
     

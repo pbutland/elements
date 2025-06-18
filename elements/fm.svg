@@ -2,18 +2,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="150" height="180" viewBox="0 0 150 180">
   <g>
     <!-- Black bordered rectangle -->
-    <rect x="0" y="0" width="150" height="180" fill="white" stroke="black" stroke-width="4" />
+    <rect x="0" y="0" width="150" height="180" fill="transparent" stroke="black" stroke-width="4" />
     
     <!-- Atomic number -->
-    <text x="75" y="30" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">100</text>
+    <text x="75" y="30" stroke="black" fill="black" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">100</text>
     
     <!-- Element symbol -->
-    <text x="75" y="105" font-family="Arial, sans-serif" font-size="80" font-weight="bold" text-anchor="middle">Fm</text>
+    <text x="75" y="105" stroke="black" fill="black" font-family="Arial, sans-serif" font-size="80" font-weight="bold" text-anchor="middle">Fm</text>
     
     <!-- Element name -->
-    <text x="75" y="140" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Fermium</text>
+    <text x="75" y="140" stroke="black" fill="black" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Fermium</text>
     
     <!-- Atomic mass -->
-    <text x="75" y="165" font-family="Arial, sans-serif" font-size="16" text-anchor="middle">257.10</text>
+    <text x="75" y="165" stroke="black" fill="black" font-family="Arial, sans-serif" font-size="16" text-anchor="middle">257.10</text>
   </g>
 </svg>
