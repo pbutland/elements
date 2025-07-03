@@ -86,7 +86,7 @@ function makeSvgResponsive(svgContent: string, useColoredElements: boolean = fal
         
         // Apply the background color to the rectangle and border color to the stroke
         modifiedSvg = modifiedSvg.replace(
-            /<rect([^>]*)fill="transparent"([^>]*)stroke="black"([^>]*)>/,
+            /<rect([^>]*)fill="none"([^>]*)stroke="black"([^>]*)>/,
             `<rect$1fill="${typeInfo.backgroundColor}"$2stroke="${typeInfo.borderColor}"$3>`
         );
         
