@@ -327,7 +327,7 @@ function makeSvgResponsive(svgContent, useColoredElements = false, elementSymbol
   if (useColoredElements && elementSymbol) {
     const typeInfo = getElementTypeInfo(elementSymbol);
     modifiedSvg = modifiedSvg.replace(
-      /<rect([^>]*)fill="transparent"([^>]*)stroke="black"([^>]*)>/,
+      /<rect([^>]*)fill="none"([^>]*)stroke="black"([^>]*)>/,
       `<rect$1fill="${typeInfo.backgroundColor}"$2stroke="${typeInfo.borderColor}"$3>`
     );
     modifiedSvg = modifiedSvg.replace(
